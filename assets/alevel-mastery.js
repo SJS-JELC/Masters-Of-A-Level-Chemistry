@@ -9,7 +9,7 @@
     ['u6-t1-1-5', 'Weak Acid Calculations'],
     ['u6-t1-1-7', 'Making Buffers'],
     ['u6-t1-1-8', 'Buffer Calculations']
-  ].map(([leafId, label]) => [leafId, Object.freeze({label, halfLives: Object.freeze({1: 2, 2: 2, 3: 2})})])));
+  ].map(([leafId, label]) => [leafId, Object.freeze({label, halfLives: Object.freeze(leafId === 'l6-t2-1-2' ? {1: 3, 2: 3, 3: 3} : {1: 2, 2: 2, 3: 2})})])));
   const threshold = 0.8;
   let records = [], serial = 0;
   function storage() { try { return root.localStorage; } catch (_) { return null; } }
