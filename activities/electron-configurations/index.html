@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a1d">
+  <title>Electron configurations · OCR A Chemistry</title>
+  <link rel="icon" href="../../assets/SJS-Eagle.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/shared-theme.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../../assets/periodic-table.css">
+  <link rel="stylesheet" href="../../assets/alevel-mastery.css">
+  <link rel="stylesheet" href="../../assets/ocr-navigation.css">
+  <link rel="stylesheet" href="../../assets/question-review.css">
+  <script src="../../assets/question-review.js"></script>
+  <script src="../../assets/alevel-mastery.js"></script>
+  <style>#progressGrid.level-progress { display: block; }</style>
+</head>
+<body>
+  <a class="ocr-home-link" href="../../Masters of A Level Chemistry.html">← OCR A Level Chemistry</a>
+  <main class="page">
+    <header class="brand">
+      <div class="brand-mark"><img src="../../assets/SJS-Eagle.svg" alt="St John's School eagle"></div>
+      <div><p class="eyebrow">OCR A CHEMISTRY // MASTERY PRACTICE</p><h1>Electron <span>configurations</span></h1></div>
+      <button id="openReference" type="button">Periodic table</button>
+    </header>
+    <section id="chooser" class="panel setup">
+      <p class="eyebrow">CHOOSE YOUR PRACTICE</p>
+      <h2>Build and identify electron configurations.</h2>
+      <p class="lede">Choose MASTERY to work through the three levels in order, or choose a fixed level for focused practice.</p>
+      <div id="practiceChoices" aria-label="Practice choices"></div>
+      <details class="teacher-notes"><summary>Learning objectives &amp; teacher notes</summary><div id="teacherNotes"><p>Level 1 covers main-group atoms with full notation and orbital boxes. Level 2 adds main-group ions and abbreviated notation. Level 3 is cumulative and includes d-block atoms and ions, all representations, and assessed isoelectronic matching.</p><p>Ground-state configurations, Cr/Cu exceptions, 4s-before-3d ionisation, orbital capacities, Hund's rule, and equivalent orbital permutations use the checked OCR A Level chemistry bank.</p><p>Curriculum: OCR A Level Chemistry A H432, 2.2.1(b–d) and 5.3.1(a). Sources and validation conventions remain in the activity README.</p></div></details>
+    </section>
+    <section id="activityScreen" hidden>
+      <div class="activity-layout">
+        <aside class="panel progress-panel"><div class="progress-heading"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Level practice</h2></div><button id="changePractice" class="quiet" type="button">Choices</button></div><p class="muted" id="progressSummary"></p><div id="masteryBar"></div><div id="progressGrid" class="level-progress"></div><p class="progress-key">Correct first attempts score 1; incorrect first attempts score 0. Invalid entries do not create a result.</p><p class="save-status" id="saveStatus" role="status"></p></aside>
+        <div class="question-stack">
+          <article id="questionPanel" class="panel question-panel"></article>
+          <section id="feedback" class="panel feedback" hidden aria-live="polite"></section>
+          <details id="answerPanel" class="panel answer-panel" hidden><summary>Checked answer</summary><div id="answerContent"></div></details>
+        </div>
+      </div>
+    </section>
+    <section id="finishScreen" class="panel finish" hidden><p class="eyebrow">ROUND COMPLETE</p><h2 id="finishTitle"></h2><div id="finishContent"></div><button id="finishAction" class="primary" type="button"></button></section>
+    <footer>OCR A Level Chemistry A · Electron structure &amp; first-row d-block configurations</footer>
+  </main>
+  <script src="../../assets/periodic-table-data.js"></script>
+  <script src="../../assets/periodic-table.js"></script>
+  <script src="data.js"></script>
+  <script src="core.js"></script>
+  <script src="session.js"></script>
+  <script src="levels.js"></script>
+  <script src="levels-app.js"></script>
+</body>
+</html>

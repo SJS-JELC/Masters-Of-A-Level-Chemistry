@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a1d">
+  <meta name="description" content="Explore OCR A Level Chemistry topics and your practice progress, across Lower Sixth and Upper Sixth.">
+  <title>Masters of A Level Chemistry</title>
+  <link rel="icon" href="assets/SJS-Eagle.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/shared-theme.css">
+  <link rel="stylesheet" href="landing/ocr.css">
+  <script defer src="landing/catalog.js"></script>
+  <link rel="stylesheet" href="assets/alevel-mastery.css">
+  <script defer src="assets/alevel-mastery.js"></script>
+  <script defer src="landing/app.js"></script>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <a class="skip-link" href="#course">Skip to course topics</a>
+  <main class="ocr-shell">
+    <header class="ocr-brand">
+      <img src="assets/SJS-Eagle.svg" alt="St John's School eagle" width="44" height="52">
+      <div><p class="eyebrow">SJS / CHEMISTRY A · H432</p><h1>Masters of <span>A Level Chemistry</span></h1></div>
+      <button id="flipYear" class="subject-toggle" type="button" role="switch" aria-checked="false" aria-label="Upper Sixth" aria-controls="t1-card t2-card"><span class="physical-label">Lower Sixth</span><span class="toggle-track" aria-hidden="true"><span class="toggle-sun">&#9728;</span><span class="toggle-moon">&#9790;</span><span class="toggle-thumb"></span></span><span class="organic-label">Upper Sixth</span></button>
+    </header>
+    <section id="course" aria-label="Course topics">
+      <div class="curriculum-panel" id="yearGrid"></div>
+      <noscript><p>Enable JavaScript to explore the course.</p></noscript>
+    </section>
+    <dialog id="gemDetails" aria-labelledby="detailName" aria-describedby="detailPath activityNote">
+      <form method="dialog"><button class="close-details" aria-label="Close gem details" autofocus>×</button></form>
+      <p class="eyebrow" id="detailPath"></p>
+      <h2 id="detailName"></h2>
+      <div id="detailStats"></div>
+      <p class="activity-status" id="activityStatus"></p>
+      <p id="activityNote"></p>
+      <a class="activity-link" id="activityLink" hidden></a>
+    </dialog>
+    <p class="closing-line">Legends aren't born, they're forged</p>
+  </main>
+  <script src="assets/site-version.js"></script>
+</body>
+</html>

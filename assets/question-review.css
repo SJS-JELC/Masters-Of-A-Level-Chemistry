@@ -1,0 +1,37 @@
+.question-review { display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin:0 0 16px; padding:12px; border:1px solid var(--line,#aaa); border-radius:10px; font-size:.8rem; }
+.question-review-id { color:var(--pink,var(--cyan,inherit)); white-space:nowrap; font-variant-numeric:tabular-nums; user-select:all; }
+.question-review-loader { display:flex; flex-wrap:wrap; gap:8px; margin:0; }
+.question-review-loader input { width:150px; min-width:0; padding:8px; color:inherit; background:transparent; border:1px solid var(--line,#aaa); border-radius:6px; font:inherit; text-transform:uppercase; }
+.question-review-loader button { width:auto; padding:10px 12px; min-height:42px; font:inherit; font-weight:700; color:#061b20; background:linear-gradient(115deg,#54f5b5,#55f6ff); border:0; border-radius:8px; cursor:pointer; }
+.question-review-loader[hidden] { display:none!important; }
+.question-review-status { flex-basis:100%; }
+.question-review-status:empty { display:none; }
+.review-sidebar { min-width:0; align-self:start; }
+.review-side-layout { display:grid; grid-template-columns:220px minmax(0,1fr); gap:20px; align-items:start; }
+.review-side-layout > :last-child { min-width:0; }
+.review-side-layout:has(> :last-child[hidden]) { display:none; }
+.flight-deck.review-flight { display:block; }
+.review-teacher-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:16px 24px; }
+.review-teacher-layout > .review-sidebar { grid-column:1; grid-row:1 / span 5; }
+.review-teacher-layout > :not(.review-sidebar) { grid-column:2; }
+.question-review { flex-direction:column; align-items:stretch; }
+.question-review-loader { flex-direction:column; }
+.question-review-loader input { width:100%; box-sizing:border-box; }
+@media(max-width:700px) { .review-side-layout,.review-teacher-layout { display:block; } }
+.printed-review-id { display:none; }
+@media print {
+  .question-review, .print-question-id { display:none!important; }
+  .printed-review-id {
+    display:block!important;
+    position:fixed;
+    bottom:0;
+    right:0;
+    margin:0;
+    padding:2mm 0 0 3mm;
+    background:#fff;
+    color:#555;
+    font:normal 7pt/1.2 Arial,sans-serif;
+    letter-spacing:0;
+    z-index:1000;
+  }
+}
