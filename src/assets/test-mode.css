@@ -1,0 +1,68 @@
+.test-tile-row{display:flex;justify-content:flex-start;align-items:center;gap:22px;margin:1.2rem 0 1.8rem}
+.test-revising .test-tile-row,.test-revising #flipYear{display:none!important}
+.test-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;flex:0 0 auto;width:112px;aspect-ratio:1;border:1px solid #72e4e9;border-radius:18px;background:linear-gradient(145deg,#192f48,#15132f);color:#e7fbff;font:700 1rem Comfortaa,system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 24px #0004}
+.test-tile:hover{border-color:#fff;transform:translateY(-2px)}
+.test-mode{color:#eef3ff;font-family:Comfortaa,system-ui,sans-serif;text-align:left}
+.test-mode [hidden]{display:none!important}.test-mode h2{font-size:clamp(1.2rem,3vw,1.7rem);margin:.3rem 0}.test-mode h3{font-size:1rem}
+.test-card{background:#11172b;border:1px solid #38435f;border-radius:18px;padding:clamp(16px,3vw,28px);margin-bottom:20px}
+.test-mode p,.test-mode small{line-height:1.6;color:#c7d2e8}.test-eyebrow{letter-spacing:.15em;font-size:.75rem}
+.test-actions{display:flex;gap:10px;flex-wrap:wrap}.test-mode button{font:inherit;font-size:.85rem;border:1px solid #627391;border-radius:9px;padding:10px 14px;background:#20304a;color:#effaff;cursor:pointer}
+.test-mode button:hover{background:#314464}.test-mode button:disabled{opacity:.45;cursor:default}
+.test-mode button:focus-visible,.test-tile:focus-visible,.test-selecting [data-leaf]:focus-visible{outline:3px solid #ffee8a;outline-offset:4px}
+.test-chosen{display:flex;gap:8px;flex-wrap:wrap;padding:0;list-style:none}.test-chosen button{border-color:#72e4e9}
+.test-selecting [data-leaf].test-selected{outline:none;border-color:transparent;background:radial-gradient(ellipse,rgba(var(--gem-rgb,85,246,255),.38),transparent 74%)}
+.test-selecting [data-leaf].test-selected .gem-body{opacity:1!important;filter:drop-shadow(0 0 9px rgba(var(--gem-rgb,85,246,255),1)) drop-shadow(0 0 20px rgba(var(--gem-rgb,85,246,255),.85))!important}
+.test-selecting [data-leaf].test-selected:focus-visible{outline:2px solid #ffee8a;outline-offset:3px}
+.test-selecting [data-leaf].test-unavailable{opacity:.25!important;cursor:not-allowed!important}
+.test-session-heading{display:flex;justify-content:space-between;align-items:start;gap:16px;flex-wrap:wrap}
+.test-bars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}.test-bars>div{display:grid;gap:8px;font-size:.8rem}
+.test-bars .mastery-bar{display:block;position:relative;height:10px;background:#070c19;border-radius:8px;overflow:hidden}.test-bars .mastery-bar-fill{position:absolute;inset:0 auto 0 0;width:var(--mastery-fill);background:#f4dd69}.test-bars [data-level="2"] .mastery-bar-fill,.test-bars [data-grade="2"] .mastery-bar-fill{background:#62e3a0}.test-bars [data-level="3"] .mastery-bar-fill,.test-bars [data-grade="3"] .mastery-bar-fill{background:#c79bff}.test-bars .mastery-bar-threshold{position:absolute;top:0;bottom:0;left:var(--mastery-threshold);width:2px;background:#fff}
+#testOverview{margin:16px 0;border-block:1px solid #35415a;padding:12px 0}#testOverview summary{cursor:pointer}#testOverviewContent>section+section{border-top:1px solid #35415a;padding-top:10px}
+#testQuestionFrame{display:block;width:100%;height:78vh;min-height:420px;border:0;border-radius:12px;background:#080a1d}
+#testError{padding:20px;border:1px solid #eabb78;border-radius:12px}#testSaveStatus{padding:12px;background:#342b1c;border-radius:9px}
+@media(max-width:600px){.test-card{padding:14px}.test-bars{gap:8px}.test-bars>div{font-size:.7rem}.test-mode .test-actions button{font-size:.75rem;padding:9px}.test-tile{width:96px}#testQuestionFrame{height:80vh}.test-session-heading{display:block}.test-session-heading .test-actions{margin-top:12px}}
+
+/* The tile expands into one shared surface during gem selection. */
+.test-tile svg{width:34px;height:34px;color:#62e3c0}
+.test-tile-row [hidden]{display:none!important}
+.test-selection{display:flex;align-items:center;gap:20px;flex:1;min-width:0;color:#eef3ff;font-family:Comfortaa,system-ui,sans-serif;text-align:left}
+.test-selection-content{flex:1;min-width:0}
+#testSelectionTitle{color:#c7d2e8;margin:0 0 12px;font-size:.9rem}
+.test-selection .test-chosen{margin:0 0 12px}
+.test-selection button{font:inherit;cursor:pointer}
+.test-selection .test-chosen button{padding:9px 13px;border:1px solid #63dedb66;border-radius:999px;background:#153b48;color:#dffff5;font-size:.8rem;line-height:1.5;text-align:left}
+.test-selection-tools{display:flex;align-items:center;flex-wrap:wrap;gap:12px;font-size:.7rem;color:#aebbd1}
+.test-selection-tools button{border:0;border-radius:999px;padding:6px 10px;font-size:.7rem;background:#44381d;color:#ffe096}
+.test-selection-tools #testCancel{background:#462b3b;color:#ffafca}
+.test-selection #testStart{display:flex;align-items:center;justify-content:center;gap:10px;flex:0 0 108px;min-height:82px;border:1px solid #83ffba;border-radius:18px;background:#54f5a3;color:#08291d;font-size:1.65rem;font-weight:700;box-shadow:0 0 24px #54f5a32a}
+.test-selection button:disabled{opacity:.4;cursor:default}.test-selection button:hover:not(:disabled){filter:brightness(1.15)}
+.test-selection button:focus-visible{outline:3px solid #ffee8a;outline-offset:3px}
+@media(max-width:600px){.test-tile-row{gap:12px;align-items:flex-start}.test-tile{width:82px;font-size:.8rem;border-radius:14px}.test-tile svg{width:28px;height:28px}.test-selection{gap:10px;flex-wrap:wrap}.test-selection-content{flex-basis:100%}.test-selection #testStart{flex:0 0 84px;min-height:52px;margin-left:auto;font-size:1.3rem}.test-selection-tools{gap:6px}.test-selection .test-chosen button{font-size:.7rem;padding:7px 10px}}
+
+.test-selecting .test-tile-row{gap:20px;border:1px solid #72e4e9;border-radius:18px;background:linear-gradient(145deg,#192f48,#15132f);box-shadow:0 8px 24px #0004;padding-right:20px}
+.test-selecting .test-tile{border-color:transparent;background:transparent;box-shadow:none;transform:none}
+.test-selecting .test-selection{align-self:stretch;padding:16px 0}
+.test-selecting .test-selection #testStart{align-self:stretch;flex:0 0 100px;min-height:78px;padding:0;border:0;border-radius:12px;background:transparent;color:#62e3c0;box-shadow:none}
+.test-selecting .test-selection #testStart:hover:not(:disabled){background:#62e3c012}
+@media(max-width:600px){.test-selecting .test-tile-row{gap:8px;padding-right:10px;align-items:center}.test-selecting .test-selection{flex-wrap:nowrap;gap:8px;padding:12px 0}.test-selecting .test-selection-content{flex:1;min-width:0}.test-selecting .test-selection #testStart{flex:0 0 52px;min-height:52px;gap:5px;font-size:1.05rem}.test-selecting .test-selection-tools{gap:5px}.test-selecting #testSelectionTitle{font-size:.75rem}.test-selecting .test-chosen button{overflow-wrap:anywhere}}
+
+/* Compact revision workspace: site navigation, question heading, overall mastery. */
+.test-navigation{display:none;margin-left:auto;align-items:center;gap:10px}
+.test-revising .test-navigation{display:flex}.test-navigation button{display:grid;place-items:center;width:42px;height:42px;border:1px solid #62e3c055;border-radius:12px;background:#142637;color:#62e3c0;cursor:pointer}.test-navigation svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.test-navigation button:focus-visible{outline:3px solid #ffee8a;outline-offset:3px}
+.test-revising header .eyebrow,.test-revising header .site-tools{display:none!important}
+#testRevision{padding:0;border:0;background:transparent}
+#testRevision .test-eyebrow,#testLevel,#testOverview,#testReason{display:none}
+#testRevision .test-session-heading{align-items:center;flex-wrap:nowrap;gap:20px;margin:10px 0 16px}
+#testRevision .test-session-heading>div:first-child{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;min-width:0}
+#testRevision #testHeading{font-size:1rem;margin:0;color:#62e3c0}
+#testQuestionTitle{font-size:1rem;color:#edf3ff}
+#testRevision .test-session-heading>.test-actions{display:none}
+#testCurrentBars{flex:0 0 270px;margin:0 0 0 auto;gap:12px}#testCurrentBars>div{font-size:.7rem;gap:6px}#testCurrentBars>div:nth-child(1)>span{color:#ffde59}#testCurrentBars>div:nth-child(2)>span{color:#54f5b5}#testCurrentBars>div:nth-child(3)>span{color:#a884ff}
+.test-revising .brand,.test-revising .ocr-brand{align-items:center;flex-wrap:nowrap;margin-bottom:16px}
+@media(max-width:600px){.test-navigation{gap:5px}.test-navigation button{width:34px;height:34px}.test-revising header h1{font-size:1rem}.test-revising .brand,.test-revising .ocr-brand{gap:8px}#testRevision .test-session-heading{flex-wrap:wrap;gap:12px}#testCurrentBars{flex:1 1 100%;margin:0}#testRevision #testHeading,#testQuestionTitle{font-size:.85rem}}
+
+.test-revising .brand,.test-revising .ocr-brand{display:flex}
+
+/* Revision keeps only the back control and unlabelled mastery bars. */
+.test-navigation #testChange{display:none}
+#testCurrentBars>div>span:first-child{display:none}

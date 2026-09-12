@@ -1,0 +1,7 @@
+[
+  {"id":"ethane","name":"Ethane","smiles":"CC","formula":"C2H6","description":"Two carbon atoms joined by a single bond; each carbon has three hydrogens."},
+  {"id":"ethene","name":"Ethene","smiles":"C=C","formula":"C2H4","description":"Two carbon atoms joined by a double bond; each carbon has two hydrogens."},
+  {"id":"ethanol","name":"Ethanol","smiles":"CCO","formula":"C2H6O","description":"A two-carbon chain with a terminal OH group, CH3CH2OH."},
+  {"id":"ethanal","name":"Ethanal","smiles":"CC=O","formula":"C2H4O","description":"CH3 joined to a carbon bearing one hydrogen and a double bond to oxygen, CH3CHO."},
+  {"id":"ethanoic-acid","name":"Ethanoic acid","smiles":"CC(=O)O","formula":"C2H4O2","description":"CH3 joined to a carboxyl group: one C=O bond and one C–OH bond, CH3COOH."}
+]

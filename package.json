@@ -1,0 +1,12 @@
+{
+  "name": "masters-of-a-level-chemistry",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/release.js build",
+    "check": "node scripts/release.js check"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

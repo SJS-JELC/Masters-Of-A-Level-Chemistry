@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a1d">
+  <title>Acid–base calculation mastery</title>
+  <link rel="icon" href="__EAGLE_DATA__" type="image/svg+xml">
+  <style>/*__STYLES__*/</style>
+</head>
+<body>
+  <main class="page">
+    <header class="brand">
+      <div class="brand-mark"><img src="__EAGLE_DATA__" alt="St John's School eagle"></div>
+      <div><p class="eyebrow">OCR A CHEMISTRY // MASTERY PRACTICE</p><h1>Acid–base <span>calculations</span></h1></div>
+    </header>
+
+    <section class="setup-screen" id="setupScreen">
+      <div class="hero panel">
+        <p class="kicker">BUILD YOUR PRACTICE</p>
+        <h2>Choose calculation families</h2>
+        <p>Work through one question from each chosen family at Level 1, then Level 2 and Level 3. Questions you miss or scaffold will return with fresh values.</p>
+        <div class="resume-card" id="resumeCard" hidden>
+          <div><strong>Saved session found</strong><p id="resumeSummary"></p></div>
+          <div class="resume-actions"><button class="secondary" id="resumeSession" type="button">Resume</button><button class="quiet" id="discardSession" type="button">Start new</button></div>
+        </div>
+        <fieldset><legend>Calculation families</legend><div class="family-grid" id="familyGrid"></div></fieldset>
+        <p class="selection-feedback" id="selectionFeedback" aria-live="polite"></p>
+        <button class="go-button" id="startSession" type="button">GO</button>
+      </div>
+    </section>
+
+    <section class="activity-screen" id="activityScreen" hidden>
+      <div class="activity-layout">
+        <aside class="mastery-panel panel" aria-labelledby="masteryTitle">
+          <div class="mastery-heading"><div><p class="kicker">YOUR PROGRESS</p><h2 id="masteryTitle">Mastery gauge</h2></div><button class="quiet reset-button" id="resetSession" type="button">Reset</button></div>
+          <div class="level-banner" id="levelBanner"></div>
+          <div class="gauge-list" id="masteryGauge"></div>
+          <p class="gauge-key"><span class="dot mastered"></span>Mastered <span class="dot due"></span>Needs proof</p>
+        </aside>
+        <section class="question-stack">
+          <article class="panel question-panel" id="questionPanel" aria-live="polite"></article>
+          <details class="worked-answer" id="answerPanel" hidden><summary>SHOW WORKED ANSWER</summary><div id="answerContent"></div></details>
+        </section>
+      </div>
+    </section>
+
+    <section class="finish-screen" id="finishScreen" hidden>
+      <div class="finish-card panel"><p class="kicker">SESSION COMPLETE</p><h2>All available levels mastered</h2><div class="finish-gauge" id="finishGauge"></div><div class="stats" id="finishStats"></div><button id="newSession" type="button">Start another session</button></div>
+    </section>
+  </main>
+  <script>/*__SCRIPTS__*/</script>
+</body>
+</html>

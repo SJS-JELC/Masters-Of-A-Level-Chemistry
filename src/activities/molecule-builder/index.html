@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a1d">
+  <title>Molecule — organic chemistry</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../../assets/ocr-navigation.css">
+<link rel="stylesheet" href="../../assets/question-review.css">
+<script src="../../assets/question-review.js"></script>
+</head>
+<body>
+  <a class="ocr-home-link" href="../../Masters of A Level Chemistry.html">← OCR A Level Chemistry</a>
+  <main class="page">
+    <header class="masthead">
+      <div class="brand-mark"><img src="../../assets/SJS-Eagle.svg" alt="St John’s School eagle"></div>
+      <div class="brand-title"><p class="eyebrow">SJS // MASTERY</p><div class="wordmark">Molecule <span>builder</span></div><p class="subject">OCR A Level Chemistry A · Organic chemistry</p></div>
+    </header>
+    <div class="activity-switch" role="group" aria-label="Activity type"><button id="moleculesMode" aria-pressed="true">Molecules</button><button id="mechanismsMode" aria-pressed="false">Mechanisms</button></div>
+    <section class="exercise" aria-labelledby="question">
+      <div class="question-row">
+        <div><p class="eyebrow">NAME TO STRUCTURE</p><h1 id="question">Draw ethane.</h1></div>
+        <div class="question-navigation"><button class="tool mechanism-only" id="previousQuestion" aria-label="Previous question" title="Previous question" hidden>←</button><span class="question-number" id="questionNumber" aria-label="Question 1 of 5">01 <span>/ 05</span></span><button class="tool mechanism-only" id="nextQuestion" aria-label="Next question" title="Next question" hidden>→</button></div>
+      </div>
+      <p class="instruction">Tap to place an atom, or drag to draw a bond. Choose Chain to draw several carbons.</p>
+      <div id="mechanismSetup" hidden><p id="mechanismConditions"></p><div id="phaseTabs" role="group" aria-label="Mechanism stages"></div><p id="phaseInstruction"></p></div>
+      <div class="drawing-card">
+        <div class="editor-bar">
+          <div class="tools" role="toolbar" aria-label="Drawing tools">
+            <div class="tool-group" role="group" aria-label="Element">
+              <button class="tool atom-tool" data-element="C" aria-pressed="true" title="Carbon (C)" aria-label="Carbon">C</button>
+              <button class="tool atom-tool" data-element="O" aria-pressed="false" title="Oxygen (O)" aria-label="Oxygen">O</button>
+              <button class="tool atom-tool" data-element="N" aria-pressed="false" title="Nitrogen (N)" aria-label="Nitrogen">N</button>
+              <button class="tool atom-tool" data-element="Cl" aria-pressed="false" title="Chlorine (L)" aria-label="Chlorine">Cl</button>
+              <button class="tool atom-tool" data-element="F" aria-pressed="false" title="Fluorine (F)" aria-label="Fluorine">F</button>
+            </div>
+            <button class="tool atom-tool" data-element="H" aria-pressed="false" aria-label="Hydrogen" title="Explicit hydrogen (H)">H</button>
+            <span class="divider" aria-hidden="true"></span>
+            <div class="tool-group" role="group" aria-label="Bond mode">
+              <button class="tool" id="chain" aria-pressed="false" title="Toggle carbon chain (3)" aria-label="Carbon chain"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 16 5-8 5 8 5-8 5 8"/></svg></button>
+            </div>
+            <span class="divider" aria-hidden="true"></span>
+            <button class="tool" id="erase" aria-pressed="false" title="Erase (E)" aria-label="Erase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 4 7 7-9 9H7l-4-4L13 4Zm-7 9 7 7M11 20h10"/></svg></button>
+            <button class="tool" id="undo" disabled title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 4 10l5 5M4 10h10a6 6 0 0 1 0 12" transform="translate(0 -2)"/></svg></button>
+          </div>
+        <div id="mechanismTools" class="mechanism-tools" role="group" aria-label="Mechanism drawing tools" hidden>
+          <button class="tool atom-tool" data-annotation="positive" aria-pressed="false" aria-label="Positive charge" title="Positive charge; cancels a negative charge">+</button>
+          <button class="tool atom-tool" data-annotation="negative" aria-pressed="false" aria-label="Negative charge" title="Negative charge; cancels a positive charge">−</button>
+          <button class="tool atom-tool" data-annotation="deltaPlus" aria-pressed="false" aria-label="Partial positive charge" title="Partial positive charge; cancels partial negative">δ+</button>
+          <button class="tool atom-tool" data-annotation="deltaMinus" aria-pressed="false" aria-label="Partial negative charge" title="Partial negative charge; cancels partial positive">δ−</button>
+          <button class="tool" data-annotation="pair" aria-pressed="false" aria-label="Lone pair" title="Lone pair"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></button>
+          <button class="tool" data-annotation="arrow" aria-pressed="false" aria-label="Curly arrow" title="Curly arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19C2 5 17 3 20 12M15 9l5 3 1-6"/></svg></button>
+
+        </div>
+          <button class="clean-button" id="clean" disabled title="Tidy bond lengths and angles without changing connections">Clean up</button>
+          <button class="clear-button" id="clear" disabled title="Remove every atom and bond">Clear structure</button>
+          <div class="view-switch" role="group" aria-label="Formula representation">
+            <button data-view="skeletal" aria-pressed="true">Skeletal</button>
+            <button data-view="structural" aria-pressed="false">Structural</button>
+          </div>
+        </div>
+
+        <div class="canvas-wrap">
+          <svg id="canvas" tabindex="0" role="group" aria-label="Molecule drawing area" viewBox="-450 -220 900 440">
+            <title>Your molecule</title>
+            <defs><marker id="electronHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10 3 5Z" fill="#ffde59"/></marker></defs><g id="bonds"></g><g id="atoms"></g><g id="mechanismAnnotations"></g><g id="preview" aria-hidden="true"></g>
+          </svg>
+        </div>
+      </div>
+      <div class="response-row">
+        <p id="feedback" role="status" aria-live="polite"></p>
+        <button class="primary" id="check">Check answer <span aria-hidden="true">↗</span></button>
+      </div>
+      <div id="mechanismResults" hidden></div><div id="mechanismAnswer" hidden></div>
+      <div class="after-check" id="afterCheck" hidden><button class="text-button" id="showAnswer" aria-expanded="false" aria-controls="answer">Show answer</button><button class="next-button" id="next">Next question <span aria-hidden="true">→</span></button></div>
+      <div class="answer" id="answer" hidden><div><p class="eyebrow">ONE WAY TO DRAW IT</p><p id="answerName"></p></div><img id="answerImage" alt=""><p class="answer-note">The same connections can be drawn in different directions.</p></div>
+    </section>
+    <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="core.js"></script>
+  <script src="layout.js"></script>
+  <script src="mechanism-data.js"></script>
+  <script src="mechanism-core.js"></script>
+  <script src="app.js"></script>
+  <script src="mechanism-ui.js"></script>
+</body>
+</html>
