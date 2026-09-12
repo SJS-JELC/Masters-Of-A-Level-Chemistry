@@ -65,4 +65,11 @@
 
 /* Revision keeps only the back control and unlabelled mastery bars. */
 .test-navigation #testChange{display:none}
+.test-topic-all{display:none}
+.test-selecting .topic-section h3{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.test-selecting .topic-section .topic-trigger{width:auto;flex:1}
+.test-selecting .test-topic-all{display:inline-block;flex:0 0 auto;border:1px solid #62e3c066;border-radius:999px;padding:5px 9px;background:#142637;color:#62e3c0;font:700 .6rem Comfortaa,system-ui,sans-serif;cursor:pointer}
+.test-topic-all:focus-visible{outline:2px solid #ffee8a;outline-offset:3px}
+.test-topic-all[aria-pressed="true"]{background:#21483f}
+#testQuestionId{font-size:.7rem;color:#c7d2e8;overflow-wrap:anywhere}
 #testCurrentBars>div>span:first-child{display:none}

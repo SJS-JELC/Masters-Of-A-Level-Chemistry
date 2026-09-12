@@ -35,7 +35,9 @@
         const reportTitle = () => {
           const title = document.querySelector('#questionTitle, [data-question-title], #questionPanel .question-header h3');
           const text = title?.textContent?.trim() || 'Question';
-          if (text !== reportTitle.previous) { reportTitle.previous = text; send('title',{title:text}); }
+          const questionId = document.querySelector('.review-id, .question-review-id, #printedReviewId')?.textContent?.trim() || '';
+          const signature = text + '\\n' + questionId;
+          if (signature !== reportTitle.previous) { reportTitle.previous = signature; send('title',{title:text,questionId}); }
           if (title) title.classList.add('test-transferred-title');
         };
         if (root.MutationObserver) new MutationObserver(reportTitle).observe(document.body,{childList:true,subtree:true,characterData:true});

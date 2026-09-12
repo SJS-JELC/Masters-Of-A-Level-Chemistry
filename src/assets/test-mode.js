@@ -31,6 +31,24 @@
     <div id="testFinish" hidden><h3>Available practice mastered</h3><p>You have confirmed every available level for your selected gems.</p><p id="testGained"></p><button id="testAgain" type="button">Revise again</button></div></section>
     <p id="testSaveStatus" role="status" hidden></p>`;
   tile.parentElement.after(host);
+  const questionId = document.createElement('span'); questionId.id = 'testQuestionId';
+  $('testQuestionTitle').after(questionId);
+  const topicButtons = [];
+  for (const topic of document.querySelectorAll('#yearGrid .topic-section')) {
+    const ids = [...topic.querySelectorAll('[data-leaf]')].map(node => node.dataset.leaf).filter(id => catalog[id]);
+    if (!ids.length) continue;
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'test-topic-all'; button.textContent = 'ADD ALL';
+    const name = topic.querySelector('h3').textContent.trim();
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      const remove = ids.every(id => selection.has(id));
+      ids.forEach(id => remove ? selection.delete(id) : selection.add(id));
+      drawSelection();
+    });
+    topic.querySelector('h3').append(button);
+    topicButtons.push({button, ids, name});
+  }
   if (location.protocol === 'file:') {
     const notice = $('testSaveStatus');
     notice.textContent = 'Revision is available on the website. Please open the published version to use it.';
@@ -69,6 +87,12 @@
   }
   function gemNodes() { return [...document.querySelectorAll('#yearGrid [data-leaf]')]; }
   function drawSelection() {
+    for (const {button, ids, name} of topicButtons) {
+      const all = ids.every(id => selection.has(id));
+      button.textContent = all ? 'REMOVE ALL' : 'ADD ALL';
+      button.setAttribute('aria-pressed', String(all));
+      button.setAttribute('aria-label', (all ? 'Remove all available gems in ' : 'Add all available gems in ') + name);
+    }
     $('testChosen').replaceChildren(...[...selection].map(id => {
       const li = document.createElement('li'), button = document.createElement('button');
       button.type = 'button'; button.textContent = catalog[id].name + ' ×'; button.setAttribute('aria-label','Remove ' + catalog[id].name);
@@ -168,6 +192,7 @@
     overview(); save(); $('testHeading').focus();
   }
   function loadQuestion() {
+    questionId.textContent = '';
     stopFrame(); $('testError').hidden = true; $('testFinish').hidden = true;
     if (!session.current) { finish(); return; }
     renderProgress(); $('testQuestionTitle').textContent = ''; const c = session.current;
@@ -200,6 +225,7 @@
       frame.contentWindow.postMessage({channel:d.channel,type:'init',sessionId:session.id,attemptId:c.attemptId,
         payload:{leafId:c.leafId,level:c.level,state:c.state,previous:session.previous[c.leafId+':'+c.level] || null}},location.origin === 'null' ? '*' : location.origin);
     } else if (d.type === 'title') {
+      questionId.textContent = typeof d.payload?.questionId === 'string' ? d.payload.questionId.slice(0,100) : '';
       if (typeof d.payload?.title === 'string') $('testQuestionTitle').textContent = d.payload.title.slice(0,250);
     } else if (d.type === 'resize') {
       if (Number.isFinite(d.payload?.height)) frame.style.height = Math.max(420,Math.min(12000,d.payload.height)) + 'px';
