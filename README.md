@@ -52,7 +52,7 @@ The containing workspace's npm.cmd test exercises chemistry and release
 selection. npm.cmd run review checks both sites under repository URL prefixes,
 local-file use, pupil/teacher modes, home layouts and explicit draft previews.
 
-The homepage has a remembered Lower Sixth / Upper Sixth selector, Physical and Organic panes, and seven independent mastery gems: six with three levels and pH titration curves with one level. Molecule Builder and Learning mode / Flashcards are excluded from the published runtime. The former link to a co-located GCSE file has been removed; add cross-course navigation only when its real published destination is configured.
+The homepage has a remembered Lower Sixth / Upper Sixth selector, Physical and Organic panes, and seven independent mastery gems: six with three levels and pH titration curves with Levels 2 and 3 (36 questions). Molecule Builder and Learning mode / Flashcards are excluded from the published runtime. The former link to a co-located GCSE file has been removed; add cross-course navigation only when its real published destination is configured.
 
 ## Prepared release checks
 

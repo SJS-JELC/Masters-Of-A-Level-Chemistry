@@ -3,14 +3,18 @@
 
   // The curve builder owns rendering and marking.  This file supplies the
   // persistence and revision contract around that activity, so the same
-  // question can run either as ordinary Level 1 practice or in an iframe
+  // question can run either as ordinary level practice or in an iframe
   // managed by the common revision scheduler.
   const LEAF = 'u6-t1-1-9';
-  const LEVEL = 1;
-  const VERSION = 'ph-titration-curves-test-v1';
-  const PRACTICE_VERSION = 'ph-titration-curves-practice-v1';
-  const STORE = 'sjs-alevel-ph-titration-curves-v1';
-  const requestedReview = new URLSearchParams(root.location?.search || '').get('review');
+  const SUPPORTED_LEVELS = Object.freeze([2, 3]);
+  const VERSION = 'ph-titration-curves-test-v2';
+  const PRACTICE_VERSION = 'ph-titration-curves-practice-v2';
+  const STORE = 'sjs-alevel-ph-titration-curves-v2';
+  const params = new URLSearchParams(root.location?.search || '');
+  const requestedReview = params.get('review');
+  const requestedPractice = params.get('practice');
+  const requestedLevel = Number(params.get('level'));
+  let activeLevel = SUPPORTED_LEVELS.includes(requestedLevel) ? requestedLevel : SUPPORTED_LEVELS[0];
   let bridge = null;
   let bridgeReady = false;
   let restored = false;
@@ -18,6 +22,7 @@
   let currentState = null;
   let currentResult = null;
   let reported = false;
+  let suppressPersistence = false;
   let savedPractice = null;
   let titleTimer = null;
   let attemptId = null;
@@ -28,8 +33,12 @@
     try { return root.structuredClone ? root.structuredClone(value) : JSON.parse(JSON.stringify(value)); }
     catch (_) { return null; }
   };
-  const questions = () => Array.isArray(root.TitrationData?.questions) ? root.TitrationData.questions : [];
-  const question = id => questions().find(item => item && item.id === id) || null;
+  const allQuestions = () => Array.isArray(root.TitrationData?.questions) ? root.TitrationData.questions : [];
+  const questions = () => allQuestions().filter(item => item && Number(item.level) === activeLevel);
+  const question = id => {
+    const bank = reviewMode() ? allQuestions() : questions();
+    return bank.find(item => item && item.id === id) || null;
+  };
   const validId = id => typeof id === 'string' && Boolean(question(id));
   const activity = () => root.TitrationActivity;
   const reviewMode = () => Boolean(requestedReview || activity()?.isReviewing?.());
@@ -49,8 +58,34 @@
     const bank = questions();
     if (!bank.length) return null;
     const index = bank.findIndex(item => item.id === exclude);
-    return bank[(index + 1 + bank.length) % bank.length].id;
+    return bank[((index < 0 ? -1 : index) + 1 + bank.length) % bank.length].id;
   }
+
+  function setLevel(level, {load = false} = {}) {
+    const next = Number(level);
+    if (!SUPPORTED_LEVELS.includes(next)) return false;
+    activeLevel = next;
+    const app = activity();
+    if (load && typeof app?.setLevel === 'function') {
+      try { app.setLevel(next); } catch (_) { return false; }
+    }
+    return true;
+  }
+
+  function levelForPractice() {
+    if (requestedPractice === 'mastery') {
+      try {
+        const next = root.ALevelMastery?.nextLevel?.(LEAF);
+        if (SUPPORTED_LEVELS.includes(Number(next))) return Number(next);
+        // Once both supported levels are mastered, continue ordinary practice
+        // at the highest available level rather than inventing a new level.
+        if (next === null) return SUPPORTED_LEVELS.at(-1);
+      } catch (_) { /* the activity remains usable with the requested level */ }
+    }
+    return activeLevel;
+  }
+
+  function practiceStore() { return `${STORE}-level-${activeLevel}`; }
 
   function safeState(value) {
     return value && typeof value === 'object' && !Array.isArray(value) ? copy(value) : null;
@@ -70,9 +105,9 @@
 
   function readPractice() {
     try {
-      const value = JSON.parse(root.localStorage?.getItem(STORE) || 'null');
+      const value = JSON.parse(root.localStorage?.getItem(practiceStore()) || 'null');
       if (!value || value.version !== PRACTICE_VERSION || value.leafId !== LEAF ||
-          value.level !== LEVEL || !validId(value.questionId) || !safeState(value.state) ||
+          Number(value.level) !== activeLevel || !validId(value.questionId) || !safeState(value.state) ||
           (value.attemptId !== undefined && typeof value.attemptId !== 'string')) return null;
       return value;
     } catch (_) { return null; }
@@ -81,15 +116,15 @@
   function writePractice() {
     if (bridge || reviewMode() || !currentId || !currentState) return;
     if (!attemptId) attemptId = makeAttemptId();
-    const value = {version: PRACTICE_VERSION, leafId: LEAF, level: LEVEL,
+    const value = {version: PRACTICE_VERSION, leafId: LEAF, level: activeLevel,
       questionId: currentId, attemptId: attemptId || makeAttemptId(), state: copy(currentState)};
-    try { root.localStorage?.setItem(STORE, JSON.stringify(value)); }
+    try { root.localStorage?.setItem(practiceStore(), JSON.stringify(value)); }
     catch (_) { /* the activity remains usable for this page */ }
   }
 
   function revisionSnapshot() {
     if (!currentId || !currentState) return null;
-    return {version: VERSION, leafId: LEAF, level: LEVEL, questionId: currentId,
+    return {version: VERSION, leafId: LEAF, level: activeLevel, questionId: currentId,
       attemptId: attemptId || bridge?.attemptId || makeAttemptId(),
       state: copy(currentState), result: currentResult ? copy(currentResult) : null,
       completedAt: currentResult ? Date.now() : null};
@@ -97,7 +132,8 @@
 
   function validSnapshot(value) {
     return Boolean(value && value.version === VERSION && value.leafId === LEAF &&
-      Number(value.level) === LEVEL && validId(value.questionId) && safeState(value.state) &&
+      Number(value.level) === activeLevel && validId(value.questionId) && safeState(value.state) &&
+      Number(question(value.questionId)?.level) === activeLevel &&
       (value.attemptId === undefined || typeof value.attemptId === 'string'));
   }
 
@@ -118,7 +154,7 @@
   }
 
   function save() {
-    if (reviewMode() || !currentId || !currentState) return;
+    if (suppressPersistence || reviewMode() || !currentId || !currentState) return;
     if (bridge) {
       try { void bridge.save(revisionSnapshot()); } catch (_) {}
     } else writePractice();
@@ -127,7 +163,7 @@
   function restore(id, state) {
     if (reviewMode()) return false;
     const app = activity();
-    if (!app || typeof app.loadQuestion !== 'function' || !validId(id)) return false;
+    if (!app || typeof app.loadQuestion !== 'function' || !validId(id) || Number(question(id)?.level) !== activeLevel) return false;
     try {
       // Pass an explicit blank state for a fresh scheduler question. A null
       // argument would let the standalone app recover an old local answer.
@@ -145,8 +181,23 @@
     if (!bridgeReady) return;
     const app = activity();
     if (!app || typeof app.getQuestion !== 'function' || typeof app.getState !== 'function') return;
-    const incomingId = detail?.questionId || app.getQuestion()?.id;
-    const incomingState = detail?.state || app.getState();
+
+    // The revision parent is authoritative for the selected level. The app's
+    // setter also clears its current question, so select it before restoring
+    // any scheduler snapshot.
+    const bridgeLevel = Number(bridge?.level);
+    const targetLevel = bridge && SUPPORTED_LEVELS.includes(bridgeLevel) ? bridgeLevel
+      : !bridge && SUPPORTED_LEVELS.includes(requestedLevel) ? requestedLevel
+      : !bridge && requestedPractice === 'mastery' && !SUPPORTED_LEVELS.includes(requestedLevel) ? levelForPractice() : null;
+    if (SUPPORTED_LEVELS.includes(targetLevel) && app.getQuestion() &&
+        Number(app.getQuestion()?.level) !== targetLevel) {
+      suppressPersistence = true;
+      try { setLevel(targetLevel, {load: true}); } finally { suppressPersistence = false; }
+    }
+    // Selecting the required level may replace the question synchronously;
+    // the original ready-event detail then describes the previous level.
+    const incomingId = app.getQuestion()?.id || detail?.questionId;
+    const incomingState = app.getState() || detail?.state;
     if (!validId(incomingId)) return;
 
     if (reviewMode()) {
@@ -161,12 +212,24 @@
       const saved = validSnapshot(bridge.state) ? bridge.state : null;
       if (saved) {
         currentResult = saved.result ? copy(saved.result) : null;
+        reported = Boolean(currentResult);
         attemptId = saved.attemptId || bridge.attemptId || makeAttemptId();
         if (restore(saved.questionId, saved.state)) return;
       }
       const previous = validSnapshot(bridge.previous) ? bridge.previous : null;
       if (previous) {
         const freshId = nextQuestionId(previous.questionId);
+        currentResult = null;
+        reported = false;
+        if (freshId && restore(freshId, null)) return;
+      } else if (bridge.previous && typeof bridge.previous === 'object') {
+        // A retained scheduler record from an older session version may not
+        // be restorable, but its question ID can still avoid repeating it.
+        const previousId = typeof bridge.previous.questionId === 'string' && validId(bridge.previous.questionId)
+          ? bridge.previous.questionId : incomingId;
+        const freshId = nextQuestionId(previousId);
+        currentResult = null;
+        reported = false;
         if (freshId && restore(freshId, null)) return;
       }
     } else if (!bridge && !restored) {
@@ -195,13 +258,13 @@
     const detail = event.detail || {};
     const app = activity();
     const id = detail.questionId || app?.getQuestion?.()?.id || currentId;
-    if (validId(id)) {
-      if (id !== currentId) {
-        attemptId = bridge?.attemptId || (typeof detail.state?.attemptId === 'string' ? detail.state.attemptId : makeAttemptId());
-        currentResult = null;
-      }
-      currentId = id;
+    if (!validId(id) || (!reviewMode() && Number(question(id)?.level) !== activeLevel)) return;
+    if (id !== currentId) {
+      attemptId = bridge?.attemptId || (typeof detail.state?.attemptId === 'string' ? detail.state.attemptId : makeAttemptId());
+      currentResult = null;
+      reported = false;
     }
+    currentId = id;
     currentState = safeState(detail.state) || safeState(app?.getState?.()) || currentState;
     if (currentState?.checked !== true) currentResult = null;
     parentTitle();
@@ -212,7 +275,7 @@
     if (reviewMode()) return;
     const app = activity();
     const id = detail.questionId || app?.getQuestion?.()?.id || currentId;
-    if (!validId(id)) return;
+    if (!validId(id) || Number(question(id)?.level) !== activeLevel) return;
     currentId = id;
     currentState = safeState(detail.state) || safeState(app?.getState?.()) || currentState;
     currentResult = detail.result && typeof detail.result === 'object' ? copy(detail.result) : null;
@@ -241,17 +304,28 @@
     const recordId = attemptId || `${LEAF}:${id}`;
     if (recordedAttempts.has(recordId)) return;
     try {
-      root.ALevelMastery.record({id: recordId, leafId: LEAF, level: LEVEL,
+      root.ALevelMastery.record({id: recordId, leafId: LEAF, level: activeLevel,
         score, completedAt: Date.now()});
       recordedAttempts.add(recordId);
     } catch (_) { /* preserve the answer in the activity's local session */ }
   }
 
   function onNext(event) {
-    if (!bridge) return;
-    // The parent scheduler owns question progression in revision mode.
+    if (reviewMode()) return;
+    if (bridge) {
+      // The parent scheduler owns question progression in revision mode.
+      event.preventDefault();
+      try { void bridge.next(); } catch (_) {}
+      return;
+    }
+    if (requestedPractice !== 'mastery') return;
+    const next = levelForPractice();
+    // Stay within the current level while it is still the mastery target; the
+    // activity advances to its next bank question using the default handler.
+    if (next === activeLevel) return;
+    if (!SUPPORTED_LEVELS.includes(next)) return;
     event.preventDefault();
-    try { void bridge.next(); } catch (_) {}
+    setLevel(next, {load: true});
   }
 
   root.addEventListener('titration:ready', onReady);
@@ -266,6 +340,6 @@
     initialise();
   }
 
-  root.TitrationSession = Object.freeze({leafId: LEAF, level: LEVEL, masteryScore, validSnapshot});
+  root.TitrationSession = Object.freeze({leafId: LEAF, get level() { return activeLevel; }, masteryScore, validSnapshot});
   void connect();
 })(globalThis);

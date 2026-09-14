@@ -29,8 +29,8 @@
       label: labels[leafId], halfLives: {1: 2, 2: 2, 3: 2}, progressionVersion: 2, levelLabels: acidLevelLabels
     }]),
     ...[...titrationLeaves].map(leafId => [leafId, {
-      label: labels[leafId], halfLives: {1: 2}, progressionVersion: 1,
-      availableGrades: [1], levelLabels: {1: 'Level 1'}
+      label: labels[leafId], halfLives: {2: 2, 3: 2}, progressionVersion: 1,
+      availableGrades: [2, 3], levelLabels: {2: 'Level 2 · Unstructured', 3: 'Level 3 · Applications'}
     }])
   ].map(([leafId, value]) => [leafId, Object.freeze({
     label: value.label, halfLives: Object.freeze(value.halfLives), progressionVersion: value.progressionVersion,
@@ -161,7 +161,11 @@
       if (option !== 'mastery') url.searchParams.set('level', option); else url.searchParams.delete('level');
       link.href = url.href;
       label.textContent = option === 'mastery' ? 'MASTERY' : labelsForLeaf[option];
-      if (option === 'mastery') detail.textContent = config[leafId].availableGrades.length === 1 ? 'Build mastery at the available level' : 'Build mastery across all three levels';
+      if (option === 'mastery') {
+        const available = config[leafId].availableGrades;
+        detail.textContent = available.length === 1 ? 'Build mastery at the available level'
+          : available.length === 3 ? 'Build mastery across all three levels' : 'Build mastery across the available levels';
+      }
       else detail.append(bar(summary(leafId, option).score, labelsForLeaf[option] + ' mastery', option));
       link.append(label, detail); container.append(link);
     }

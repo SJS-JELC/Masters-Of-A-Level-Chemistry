@@ -411,10 +411,11 @@
   "u6-t1-1-9": {
     "label": "pH titration curves",
     "href": "activities/ph-titration-curves/index.html",
-    "note": "Build and interpret ethanoic-acid/NaOH titration curves and choose a suitable indicator. One practice level.",
+    "note": "Build and interpret ethanoic-acid/NaOH titration curves and choose a suitable indicator. Choose Level 2 (Unstructured) or Level 3 (Applications) practice, or build mastery across the available levels.",
     "mastery": true,
     "availableGrades": [
-      1
+      2,
+      3
     ]
   }
 };
