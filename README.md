@@ -1,7 +1,7 @@
 # Masters of A Level Chemistry
 
 This folder is the independent app repository root. **src/** is its source of
-truth; **dist/** is generated publishing output. Two practice activities are included: electron configurations and acid-base calculations. Open src/index.html directly in Edge or Chrome for a local preview.
+truth; **dist/** is generated publishing output. Three practice activities are included: electron configurations, acid-base calculations and pH titration curves. Open src/index.html directly in Edge or Chrome for a local preview.
 
 ## Release
 
@@ -52,7 +52,7 @@ The containing workspace's npm.cmd test exercises chemistry and release
 selection. npm.cmd run review checks both sites under repository URL prefixes,
 local-file use, pupil/teacher modes, home layouts and explicit draft previews.
 
-The homepage has a remembered Lower Sixth / Upper Sixth selector, Physical and Organic panes, and seven independent three-level mastery gems. Molecule Builder and Learning mode / Flashcards are excluded from the published runtime. The former link to a co-located GCSE file has been removed; add cross-course navigation only when its real published destination is configured.
+The homepage has a remembered Lower Sixth / Upper Sixth selector, Physical and Organic panes, and seven independent mastery gems: six with three levels and pH titration curves with one level. Molecule Builder and Learning mode / Flashcards are excluded from the published runtime. The former link to a co-located GCSE file has been removed; add cross-course navigation only when its real published destination is configured.
 
 ## Prepared release checks
 

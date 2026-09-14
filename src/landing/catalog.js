@@ -407,6 +407,15 @@
     "href": "activities/acid-base-calculations/index.html",
     "note": "Numerical practice for this subtopic. Choose Structured, Unstructured or Applications practice, or build mastery across all three levels.",
     "mastery": true
+  },
+  "u6-t1-1-9": {
+    "label": "pH titration curves",
+    "href": "activities/ph-titration-curves/index.html",
+    "note": "Build and interpret ethanoic-acid/NaOH titration curves and choose a suitable indicator. One practice level.",
+    "mastery": true,
+    "availableGrades": [
+      1
+    ]
   }
 };
   root.MASTERS_DISPLAY = {

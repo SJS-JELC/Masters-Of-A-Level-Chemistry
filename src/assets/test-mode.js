@@ -168,7 +168,7 @@
     const setting = session.gems[c.leafId][c.level];
     $('testHeading').textContent = catalog[c.leafId].name;
     $('testLevel').textContent = catalog[c.leafId].labels[c.level];
-    $('testCurrentBars').replaceChildren(...[1,2,3].map(level => {
+    $('testCurrentBars').replaceChildren(...catalog[c.leafId].levels.map(level => {
       const states = session.selected.filter(id => catalog[id].levels.includes(level)).map(id => summary(id,level));
       const score = states.length ? states.reduce((sum,state) => sum + (state.score || 0),0)/states.length : null;
       const colour = ['Gold','Green','Purple'][level-1], mastered = states.length && states.every(state => state.score > .8);

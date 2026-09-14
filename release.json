@@ -2,7 +2,8 @@
   "name": "Masters-of-A-Level-Chemistry",
   "activities": [
     "electron-configurations",
-    "acid-base-calculations"
+    "acid-base-calculations",
+    "ph-titration-curves"
   ],
   "files": [
     ".nojekyll",
@@ -22,6 +23,12 @@
     "activities/electron-configurations/levels.js",
     "activities/electron-configurations/session.js",
     "activities/electron-configurations/styles.css",
+    "activities/ph-titration-curves/app.js",
+    "activities/ph-titration-curves/core.js",
+    "activities/ph-titration-curves/data.js",
+    "activities/ph-titration-curves/index.html",
+    "activities/ph-titration-curves/session.js",
+    "activities/ph-titration-curves/styles.css",
     "assets/SJS-Eagle.svg",
     "assets/alevel-mastery.css",
     "assets/alevel-mastery.js",

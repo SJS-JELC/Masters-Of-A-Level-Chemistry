@@ -9,6 +9,7 @@
   const acidLeaves = Object.freeze(new Set([
     'u6-t1-1-2', 'u6-t1-1-3', 'u6-t1-1-5', 'u6-t1-1-7', 'u6-t1-1-8'
   ]));
+  const titrationLeaves = Object.freeze(new Set(['u6-t1-1-9']));
   const acidLevelLabels = Object.freeze({
     1: 'Level 1 · Structured', 2: 'Level 2 · Unstructured', 3: 'Level 3 · Applications'
   });
@@ -19,15 +20,21 @@
     'u6-t1-1-3': 'Kw & Strong Bases',
     'u6-t1-1-5': 'Weak Acid Calculations',
     'u6-t1-1-7': 'Making Buffers',
-    'u6-t1-1-8': 'Buffer Calculations'
+    'u6-t1-1-8': 'Buffer Calculations',
+    'u6-t1-1-9': 'pH Titration Curves'
   };
   const config = Object.freeze(Object.fromEntries([
     ['l6-t2-1-2', {label: labels['l6-t2-1-2'], halfLives: {1: 3, 2: 3, 3: 3}, progressionVersion: 1, levelLabels: electronLevelLabels}],
     ...[...acidLeaves].map(leafId => [leafId, {
       label: labels[leafId], halfLives: {1: 2, 2: 2, 3: 2}, progressionVersion: 2, levelLabels: acidLevelLabels
+    }]),
+    ...[...titrationLeaves].map(leafId => [leafId, {
+      label: labels[leafId], halfLives: {1: 2}, progressionVersion: 1,
+      availableGrades: [1], levelLabels: {1: 'Level 1'}
     }])
   ].map(([leafId, value]) => [leafId, Object.freeze({
     label: value.label, halfLives: Object.freeze(value.halfLives), progressionVersion: value.progressionVersion,
+    availableGrades: Object.freeze(value.availableGrades || [1, 2, 3]),
     levelLabels: Object.freeze(value.levelLabels)
   })])));
   const historicalConfig = Object.freeze({
@@ -87,7 +94,7 @@
     return scores.reduce((value, score) => value * decay + score * (1 - decay), 0);
   }
   function summary(leafId, level) {
-    if (!Object.hasOwn(config, leafId) || ![1, 2, 3].includes(Number(level))) throw Error('Unknown mastery level.');
+    if (!Object.hasOwn(config, leafId) || !config[leafId].availableGrades.includes(Number(level))) throw Error('Unknown mastery level.');
     const matches = evidenceFor(leafId).filter(item => item.level === Number(level));
     const score = weightedScore(matches.map(item => item.score), config[leafId].halfLives[level]);
     const latest = matches[matches.length - 1];
@@ -97,7 +104,7 @@
   }
   function achievement(leafId) {
     if (!Object.hasOwn(config, leafId)) throw Error('Unknown mastery activity.');
-    const states = [1, 2, 3].map(level => summary(leafId, level));
+    const states = config[leafId].availableGrades.map(level => summary(leafId, level));
     let level = 0;
     for (const state of states) { if (!state.mastered) break; level = state.level; }
     return {level, states};
@@ -106,6 +113,7 @@
   function record(item) {
     const now = Date.now();
     if (!valid(item, now, {historical: false}) || !Object.hasOwn(config, item.leafId) ||
+      !config[item.leafId].availableGrades.includes(item.level) ||
       (activeVersion(item.leafId) === 2 && item.progressionVersion !== undefined && item.progressionVersion !== 2) ||
       (activeVersion(item.leafId) === 1 && item.progressionVersion === 2)) throw Error('Invalid mastery result.');
     const savedItem = {...item};
@@ -145,7 +153,7 @@
     if (!Object.hasOwn(config, leafId)) throw Error('Unknown mastery activity.');
     container.replaceChildren(); container.classList.add('practice-choices');
     const labelsForLeaf = config[leafId].levelLabels;
-    for (const option of ['mastery', 1, 2, 3]) {
+    for (const option of ['mastery', ...config[leafId].availableGrades]) {
       const link = root.document.createElement('a'), label = root.document.createElement('strong'), detail = root.document.createElement('span');
       link.className = 'practice-choice'; link.dataset.practice = String(option);
       const url = new URL(href, root.document.baseURI);
@@ -153,7 +161,7 @@
       if (option !== 'mastery') url.searchParams.set('level', option); else url.searchParams.delete('level');
       link.href = url.href;
       label.textContent = option === 'mastery' ? 'MASTERY' : labelsForLeaf[option];
-      if (option === 'mastery') detail.textContent = 'Build mastery across all three levels';
+      if (option === 'mastery') detail.textContent = config[leafId].availableGrades.length === 1 ? 'Build mastery at the available level' : 'Build mastery across all three levels';
       else detail.append(bar(summary(leafId, option).score, labelsForLeaf[option] + ' mastery', option));
       link.append(label, detail); container.append(link);
     }
