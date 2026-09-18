@@ -123,10 +123,10 @@
         1,
         "Electrons & Bonding",
         [
-          "Shells, Subshells & Orbitals",
+          "Basics",
           "Electron Configurations",
-          "Ionic Bonding",
-          "Covalent & Coordinate Bonding"
+          "Dot-and-Cross Diagrams",
+          "Explaining Properties"
         ]
       ],
       [
@@ -372,11 +372,31 @@
   }
 ];
   root.MASTERS_ACTIVITIES = {
+  "l6-t2-1-1": {
+    "label": "Electrons & Bonding basics",
+    "href": "activities/electrons-bonding/index.html",
+    "note": "Level 1 typed-answer recall: orbitals, shells, ionic and covalent bonding, with linked periodicity and bond-enthalpy definitions.",
+    "mastery": true,
+    "availableGrades": [
+      1
+    ]
+  },
   "l6-t2-1-2": {
     "label": "Electron configurations",
     "href": "activities/electron-configurations/index.html",
     "note": "Choose a level or build mastery across all three levels.",
     "mastery": true
+  },
+  "l6-t2-1-3": {
+    "label": "Dot-and-Cross Diagrams",
+    "href": "activities/dot-and-cross/index.html",
+    "note": "Draw ionic, covalent and coordinate-bonding diagrams together. Levels 1, 2 and 3 each combine the existing question sets at that level.",
+    "mastery": true,
+    "availableGrades": [
+      1,
+      2,
+      3
+    ]
   },
   "u6-t1-1-2": {
     "label": "Acid–base calculations",
@@ -407,6 +427,16 @@
     "href": "activities/acid-base-calculations/index.html",
     "note": "Numerical practice for this subtopic. Choose Structured, Unstructured or Applications practice, or build mastery across all three levels.",
     "mastery": true
+  },
+  "u6-t1-1-9": {
+    "label": "pH titration curves",
+    "href": "activities/ph-titration-curves/index.html",
+    "note": "Build and interpret ethanoic-acid/NaOH titration curves and choose a suitable indicator. Choose Level 2 (Unstructured) or Level 3 (Applications) practice, or build mastery across the available levels.",
+    "mastery": true,
+    "availableGrades": [
+      2,
+      3
+    ]
   }
 };
   root.MASTERS_DISPLAY = {

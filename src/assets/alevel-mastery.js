@@ -9,33 +9,81 @@
   const acidLeaves = Object.freeze(new Set([
     'u6-t1-1-2', 'u6-t1-1-3', 'u6-t1-1-5', 'u6-t1-1-7', 'u6-t1-1-8'
   ]));
+  const titrationLeaves = Object.freeze(new Set(['u6-t1-1-9']));
   const acidLevelLabels = Object.freeze({
     1: 'Level 1 · Structured', 2: 'Level 2 · Unstructured', 3: 'Level 3 · Applications'
   });
   const electronLevelLabels = Object.freeze({1: 'Level 1', 2: 'Level 2', 3: 'Level 3'});
   const labels = {
+    'l6-t2-1-1': 'Electrons & Bonding basics',
     'l6-t2-1-2': 'Electron configurations',
+    'l6-t2-1-3': 'Dot-and-Cross Diagrams',
     'u6-t1-1-2': 'Strong Acids & pH',
     'u6-t1-1-3': 'Kw & Strong Bases',
     'u6-t1-1-5': 'Weak Acid Calculations',
     'u6-t1-1-7': 'Making Buffers',
-    'u6-t1-1-8': 'Buffer Calculations'
+    'u6-t1-1-8': 'Buffer Calculations',
+    'u6-t1-1-9': 'pH Titration Curves'
   };
   const config = Object.freeze(Object.fromEntries([
+    ['l6-t2-1-1', {label: labels['l6-t2-1-1'], halfLives: {1: 3}, progressionVersion: 1, availableGrades: [1], levelLabels: {1: 'Level 1 · Key learning'}}],
     ['l6-t2-1-2', {label: labels['l6-t2-1-2'], halfLives: {1: 3, 2: 3, 3: 3}, progressionVersion: 1, levelLabels: electronLevelLabels}],
+    ['l6-t2-1-3', {label: labels['l6-t2-1-3'], halfLives: {1: 3, 2: 3, 3: 3}, progressionVersion: 1, levelLabels: electronLevelLabels}],
     ...[...acidLeaves].map(leafId => [leafId, {
       label: labels[leafId], halfLives: {1: 2, 2: 2, 3: 2}, progressionVersion: 2, levelLabels: acidLevelLabels
+    }]),
+    ...[...titrationLeaves].map(leafId => [leafId, {
+      label: labels[leafId], halfLives: {2: 2, 3: 2}, progressionVersion: 1,
+      availableGrades: [2, 3], levelLabels: {2: 'Level 2 · Unstructured', 3: 'Level 3 · Applications'}
     }])
   ].map(([leafId, value]) => [leafId, Object.freeze({
     label: value.label, halfLives: Object.freeze(value.halfLives), progressionVersion: value.progressionVersion,
+    availableGrades: Object.freeze(value.availableGrades || [1, 2, 3]),
     levelLabels: Object.freeze(value.levelLabels)
   })])));
   const historicalConfig = Object.freeze({
+    'l6-t2-1-4': Object.freeze({label: 'Covalent & Coordinate Bonding (legacy diagrams)', progressionVersion: 1}),
     'u6-t1-1-4': Object.freeze({label: 'Ka & pKa', progressionVersion: 1})
   });
   const knownLeaves = new Set([...Object.keys(config), ...Object.keys(historicalConfig)]);
   const threshold = 0.8;
   let records = [], serial = 0;
+
+  // The former ionic/covalent diagram gems now share one diagram progression.
+  // Retain IDs, dates, scores and optional timing; never invent new attempts.
+  const dotCrossLeaf = 'l6-t2-1-3', formerCovalentLeaf = 'l6-t2-1-4';
+  const canonicalLeaf = leaf => leaf === formerCovalentLeaf ? dotCrossLeaf : leaf;
+  function migrateRevisionSession(original) {
+    if (!original || original.dotCrossMerged === true || !Array.isArray(original.selected) ||
+        !original.selected.some(leaf => [dotCrossLeaf, formerCovalentLeaf].includes(leaf))) return original;
+    // Invalid stored sessions are handled by the existing validation gate.
+    if (!original.gems || !Array.isArray(original.round) || !Array.isArray(original.evidence) || !original.previous) return original;
+    const value = JSON.parse(JSON.stringify(original));
+    const unique = leaves => [...new Set(leaves.map(canonicalLeaf))];
+    value.selected = unique(value.selected);
+    value.round = unique(value.round);
+    value.lastLeaf = canonicalLeaf(value.lastLeaf);
+    if (value.current) value.current.leafId = canonicalLeaf(value.current.leafId);
+    // Keep the pending diagram and its first assessment, but require a check
+    // of the broadened pool before claiming this session confirms that level.
+    value.gems[dotCrossLeaf] = Object.fromEntries([1,2,3].map(level => {
+      const current = summary(dotCrossLeaf, level);
+      return [level, {mode: current.mastered ? 'check' : 'practice',
+        required: current.mastered && current.days > 7 ? 2 : 1,
+        streak: 0, confirmedAt: null, initialScore: current.score}];
+    }));
+    delete value.gems[formerCovalentLeaf];
+    const previous = {};
+    for (const [key, state] of Object.entries(value.previous)) {
+      const colon = key.lastIndexOf(':');
+      const leaf = key.slice(0, colon), level = key.slice(colon + 1);
+      previous[canonicalLeaf(leaf) + ':' + level] = state;
+    }
+    value.previous = previous;
+    value.evidence = clean(value.evidence);
+    value.dotCrossMerged = true;
+    return value;
+  }
 
   function storage() { try { return root.localStorage; } catch (_) { return null; } }
   function activeVersion(leafId) { return config[leafId]?.progressionVersion; }
@@ -53,10 +101,18 @@
       if (!valid(item, now, options) || seen.has(item.id)) return false;
       seen.add(item.id); return true;
     }).map(item => {
-      const cleaned = {id: item.id, leafId: item.leafId, level: item.level, score: item.score, completedAt: item.completedAt};
+      const cleaned = {id: item.id, leafId: canonicalLeaf(item.leafId), level: item.level, score: item.score, completedAt: item.completedAt};
+      if (item.leafId === formerCovalentLeaf || item.sourceLeafId === formerCovalentLeaf) cleaned.sourceLeafId = formerCovalentLeaf;
       if (item.progressionVersion !== undefined) cleaned.progressionVersion = item.progressionVersion;
+      const timing = cleanTiming(item.timing);
+      if (timing) cleaned.timing = timing;
       return cleaned;
     }).sort((a, b) => a.completedAt - b.completedAt);
+  }
+  function cleanTiming(value) {
+    if (!value || value.version !== 1 || !Number.isSafeInteger(value.activeMs) || value.activeMs < 0 ||
+      ![60000, 180000, 300000, 600000].includes(value.idleLimitMs)) return undefined;
+    return {version: 1, activeMs: value.activeMs, idleLimitMs: value.idleLimitMs};
   }
   function readStore(source, storeKey, now) {
     if (!source || typeof source.getItem !== 'function') return [];
@@ -87,7 +143,7 @@
     return scores.reduce((value, score) => value * decay + score * (1 - decay), 0);
   }
   function summary(leafId, level) {
-    if (!Object.hasOwn(config, leafId) || ![1, 2, 3].includes(Number(level))) throw Error('Unknown mastery level.');
+    if (!Object.hasOwn(config, leafId) || !config[leafId].availableGrades.includes(Number(level))) throw Error('Unknown mastery level.');
     const matches = evidenceFor(leafId).filter(item => item.level === Number(level));
     const score = weightedScore(matches.map(item => item.score), config[leafId].halfLives[level]);
     const latest = matches[matches.length - 1];
@@ -97,7 +153,7 @@
   }
   function achievement(leafId) {
     if (!Object.hasOwn(config, leafId)) throw Error('Unknown mastery activity.');
-    const states = [1, 2, 3].map(level => summary(leafId, level));
+    const states = config[leafId].availableGrades.map(level => summary(leafId, level));
     let level = 0;
     for (const state of states) { if (!state.mastered) break; level = state.level; }
     return {level, states};
@@ -106,6 +162,7 @@
   function record(item) {
     const now = Date.now();
     if (!valid(item, now, {historical: false}) || !Object.hasOwn(config, item.leafId) ||
+      !config[item.leafId].availableGrades.includes(item.level) ||
       (activeVersion(item.leafId) === 2 && item.progressionVersion !== undefined && item.progressionVersion !== 2) ||
       (activeVersion(item.leafId) === 1 && item.progressionVersion === 2)) throw Error('Invalid mastery result.');
     const savedItem = {...item};
@@ -145,7 +202,7 @@
     if (!Object.hasOwn(config, leafId)) throw Error('Unknown mastery activity.');
     container.replaceChildren(); container.classList.add('practice-choices');
     const labelsForLeaf = config[leafId].levelLabels;
-    for (const option of ['mastery', 1, 2, 3]) {
+    for (const option of ['mastery', ...config[leafId].availableGrades]) {
       const link = root.document.createElement('a'), label = root.document.createElement('strong'), detail = root.document.createElement('span');
       link.className = 'practice-choice'; link.dataset.practice = String(option);
       const url = new URL(href, root.document.baseURI);
@@ -153,11 +210,15 @@
       if (option !== 'mastery') url.searchParams.set('level', option); else url.searchParams.delete('level');
       link.href = url.href;
       label.textContent = option === 'mastery' ? 'MASTERY' : labelsForLeaf[option];
-      if (option === 'mastery') detail.textContent = 'Build mastery across all three levels';
+      if (option === 'mastery') {
+        const available = config[leafId].availableGrades;
+        detail.textContent = available.length === 1 ? 'Build mastery at the available level'
+          : available.length === 3 ? 'Build mastery across all three levels' : 'Build mastery across the available levels';
+      }
       else detail.append(bar(summary(leafId, option).score, labelsForLeaf[option] + ' mastery', option));
       link.append(label, detail); container.append(link);
     }
   }
   refresh();
-  root.ALevelMastery = Object.freeze({key, acidKey, config, threshold, read, history, readHistory: history, clean, refresh, weightedScore, summary, achievement, nextLevel, record, attemptId, bar, renderChoices});
+  root.ALevelMastery = Object.freeze({key, acidKey, config, threshold, read, history, readHistory: history, clean, migrateRevisionSession, refresh, weightedScore, summary, achievement, nextLevel, record, attemptId, bar, renderChoices});
 })(globalThis);

@@ -80,7 +80,16 @@
   function load() {
     try {
       const raw = localStorage.getItem(key);
-      if (raw) { const parsed = JSON.parse(raw); if (C.valid(parsed,catalog)) return parsed;
+      if (raw) { const original = JSON.parse(raw), parsed = alevel && M.migrateRevisionSession ? M.migrateRevisionSession(original) : original;
+        if (C.valid(parsed,catalog)) {
+          if (parsed !== original) {
+            // Keep the pre-merge session for recovery before persisting the compatible copy.
+            const backupKey = key + '-before-dot-cross-merge';
+            if (!localStorage.getItem(backupKey)) localStorage.setItem(backupKey, raw);
+            localStorage.setItem(key, JSON.stringify(parsed));
+          }
+          return parsed;
+        }
         $('testSaveStatus').hidden = false; $('testSaveStatus').textContent = 'The previous revision session is no longer compatible. Your mastery history is retained.'; }
     } catch (_) { warn(); }
     return null;
@@ -125,7 +134,21 @@
       }
     }
   }
-  function stopFrame() { clearTimeout(timer); if (frame) frame.remove(); frame = null; }
+  function stopFrame() {
+    clearTimeout(timer);
+    if (frame) {
+      // Save the final partial interval synchronously before removing the frame;
+      // queued bridge messages from a detached frame are deliberately ignored.
+      try {
+        const timing = frame.contentWindow.ActiveQuestionTime?.pause();
+        if (timing && session?.current?.state && timing.id === session.current.attemptId) {
+          session.current.state.timing = timing; save();
+        }
+      } catch (_) { /* unavailable frames have no timing checkpoint */ }
+      frame.remove();
+    }
+    frame = null;
+  }
   function selectGems() {
     document.body.classList.remove('test-revising');
     if (session) { session.active = false; save(); }
@@ -168,7 +191,7 @@
     const setting = session.gems[c.leafId][c.level];
     $('testHeading').textContent = catalog[c.leafId].name;
     $('testLevel').textContent = catalog[c.leafId].labels[c.level];
-    $('testCurrentBars').replaceChildren(...[1,2,3].map(level => {
+    $('testCurrentBars').replaceChildren(...catalog[c.leafId].levels.map(level => {
       const states = session.selected.filter(id => catalog[id].levels.includes(level)).map(id => summary(id,level));
       const score = states.length ? states.reduce((sum,state) => sum + (state.score || 0),0)/states.length : null;
       const colour = ['Gold','Green','Purple'][level-1], mastered = states.length && states.every(state => state.score > .8);
@@ -204,7 +227,10 @@
   }
   function start(resume) {
     refresh(); leaveSelection();
-    if (!resume) session = C.create([...selection],catalog,summary,Date.now(),uuid());
+    if (!resume) {
+      session = C.create([...selection],catalog,summary,Date.now(),uuid());
+      if (alevel && M.migrateRevisionSession) session.dotCrossMerged = true;
+    }
     session.active = true; $('testRevision').hidden = false; map.hidden = true;
     document.body.classList.add('test-revising');
     if (!session.current) C.next(session,summary,Date.now(),uuid());

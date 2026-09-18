@@ -41,6 +41,7 @@
     catch (_) { return { score: null, mastered: false, count: 0 }; }
   }
   function showChooser() {
+    globalThis.ActiveQuestionTime?.stop();
     el.chooser.hidden = false; el.activityScreen.hidden = true; el.finishScreen.hidden = true;
     if (typeof M.renderChoices === "function") M.renderChoices(el.practiceChoices, { leafId: LEAF, href: location.pathname });
     else el.practiceChoices.innerHTML = ["mastery", "level=1", "level=2", "level=3"].map((value) => `<a class="practice-choice" href="?leaf=${encodeURIComponent(LEAF)}&practice=${value === "mastery" ? "mastery" : "level&" + value}"><strong>${value === "mastery" ? "MASTERY" : "Level " + value.slice(-1)}</strong></a>`).join("");
@@ -128,6 +129,12 @@
     });
     const titleNode = el.questionPanel.querySelector("#questionTitle"); titleNode?.focus({ preventScroll: true });
     if (id && globalThis.QuestionReview) QuestionReview.mount(el.questionPanel, id, loadReview);
+    if (!reviewing) {
+      const item = session.current;
+      item.timing = ActiveQuestionTime.start({id: item.attemptId,
+        idleLimitMs: ActiveQuestionTime.allowance('electron', item), saved: item.timing,
+        completed: Boolean(session.result), onCheckpoint: timing => { item.timing = timing; save(); }});
+    } else ActiveQuestionTime.stop();
   }
   function submitEvent(event) {
     event.preventDefault();
@@ -142,6 +149,8 @@
     }
     session.current.attemptSaved = true;
     save();
+    // Invalid/blank answers do not end the timer or create timing evidence.
+    if (S.mark(session.current, session.response).accepted) ActiveQuestionTime.finish();
     const result = S.submit(session);
     if (!result.accepted) { el.questionPanel.querySelector("#answerError").textContent = result.message; save(); return; }
     showActivity();
@@ -175,6 +184,7 @@
     renderQuestion(); feedback(); save();
   }
   function showFinish() {
+    globalThis.ActiveQuestionTime?.stop();
     el.chooser.hidden = true; el.activityScreen.hidden = true; el.finishScreen.hidden = false;
     const accuracy = session.completedCount ? session.correctCount / session.completedCount : 0;
     const score = levelSummary(session.level).score;
@@ -250,7 +260,7 @@
       result: session.result ? structuredClone(session.result) : null,
       generator: Object.fromEntries(generatorFields.map(key => [key, structuredClone(session[key])])),
       independent: session.testIndependent !== false,
-      completedAt: session.testCompletedAt || null
+      completedAt: session.testCompletedAt || null, timing: session.current.timing
     };
   }
   async function testSave() {
@@ -293,6 +303,7 @@
     base.testSeed = testSeed; base.testIndependent = validState ? state.independent !== false : true; base.testCompletedAt = validState ? state.completedAt || null : null;
     base.current = stored ? structuredClone(stored) : structuredClone(base.current);
     base.current.attemptId = String(testBridge.attemptId || base.current.attemptId);
+    if (validState) base.current.timing = state.timing || base.current.timing;
     base.response = validState ? structuredClone(state.response) : C.blankResponse();
     base.result = validState && state.result && typeof state.result === "object" ? structuredClone(state.result) : null;
     base.completed = false;
@@ -305,13 +316,14 @@
     const completedAt = session.testCompletedAt || Date.now();
     session.testCompletedAt = completedAt;
     await testSave();
-    const evidence = { score: result.correct ? 1 : 0, result: structuredClone(result) };
+    const evidence = { score: result.correct ? 1 : 0, result: structuredClone(result), timing: ActiveQuestionTime.result(session.current.timing) };
     try { await testBridge.result({ score: result.correct ? 1 : 0, independent: session.testIndependent !== false, completedAt, evidence }); } catch (_) { session.testReported = false; }
   }
   async function testSubmit() {
     if (session.result) { try { await testBridge.next(); } catch (_) {} return; }
     const result = S.mark(session.current, session.response);
     if (!result.accepted) { el.questionPanel.querySelector("#answerError").textContent = result.message; return; }
+    ActiveQuestionTime.finish();
     session.result = result; session.completedCount = 1; session.correctCount = result.correct ? 1 : 0; session.testCompletedAt = Date.now();
     showActivity();
     await testReport();

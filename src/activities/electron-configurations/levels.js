@@ -143,7 +143,8 @@
         leafId: session.leafId,
         level: session.level,
         score: result.correct ? 1 : 0,
-        completedAt: Date.now()
+        completedAt: Date.now(),
+        timing: root.ActiveQuestionTime?.result(session.current.timing)
       }));
       if (!saved) session.recordSaveFailed = true;
       return saved;

@@ -107,6 +107,12 @@
     elements.workedAnswer.open = false;
     elements.workedContent.replaceChildren();
     if (session.current.submitted) restoreFeedback();
+    if (!session.reviewing) {
+      const item = session.current;
+      item.timing = ActiveQuestionTime.start({id: item.id,
+        idleLimitMs: ActiveQuestionTime.allowance('acid', question), saved: item.timing,
+        completed: item.submitted, onCheckpoint: timing => { item.timing = timing; save(); }});
+    } else ActiveQuestionTime.stop();
   }
   function clearFeedback() {
     elements.questionPanel.querySelectorAll(".response-row").forEach(row => { row.classList.remove("correct", "incorrect"); row.querySelector(".response-feedback").textContent = ""; });
@@ -124,7 +130,7 @@
   function recordFirstAttempt() {
     const current = session.current;
     if (session.reviewing || current.recorded) return;
-    current.recorded = api().record({ id: current.id, leafId, level: current.level, score: current.score, completedAt: current.completedAt });
+    current.recorded = api().record({ id: current.id, leafId, level: current.level, score: current.score, completedAt: current.completedAt, timing: ActiveQuestionTime.result(current.timing) });
     if (!current.recorded) showStorageWarning("This result is retained for this open page, but the browser could not save it permanently.");
   }
   function checkAnswers() {
@@ -133,6 +139,7 @@
     if (!outcome.accepted) { document.getElementById("checkSummary").textContent = outcome.reason; return; }
     clearFeedback(); mark(outcome.results); renderWorked();
     if (!session.current.submitted) {
+      ActiveQuestionTime.finish();
       session.current.submitted = true; session.current.score = outcome.score; session.current.completedAt = Date.now();
       if (testBridge) { session.current.firstResponses = values.slice(); session.current.firstResults = structuredClone(outcome.results); }
     }
@@ -194,7 +201,7 @@
       firstResponses: session.current.firstResponses ? structuredClone(session.current.firstResponses) : null,
       firstResults: session.current.firstResults ? structuredClone(session.current.firstResults) : null,
       submitted: Boolean(session.current.submitted), score: session.current.score,
-      completedAt: session.current.completedAt, independent: session.testIndependent !== false
+      completedAt: session.current.completedAt, independent: session.testIndependent !== false, timing: session.current.timing
     };
   }
   async function testSave() {
@@ -223,6 +230,7 @@
     session.testIndependent = state?.independent !== false;
     session.testReported = false;
     session.current = { id: String(testBridge.attemptId || `acid-test-${seed}`), level: requestedLevel, templateId: selected.templateId, seed, responses, firstResponses: state?.firstResponses ? state.firstResponses.slice() : null, firstResults: state?.firstResults ? structuredClone(state.firstResults) : null, working: state?.working || "", submitted: Boolean(state?.submitted), recorded: false, score: state?.score ?? null, completedAt: state?.completedAt ?? null };
+    session.current.timing = state?.timing;
   }
   async function testReport(outcome) {
     if (!testBridge || !session?.current?.submitted || session.testReported) return;
@@ -230,7 +238,7 @@
     const current = session.current;
     const completedAt = current.completedAt || Date.now(); current.completedAt = completedAt;
     await testSave();
-    const evidence = { score: current.score, results: structuredClone(current.firstResults || outcome.results) };
+    const evidence = { score: current.score, results: structuredClone(current.firstResults || outcome.results), timing: ActiveQuestionTime.result(current.timing) };
     try { await testBridge.result({ score: current.score, independent: session.testIndependent !== false, completedAt, evidence }); } catch (_) { session.testReported = false; }
   }
   async function testNext() { try { await testBridge.next(); } catch (_) {} }

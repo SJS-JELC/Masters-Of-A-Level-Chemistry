@@ -73,3 +73,7 @@
 .test-topic-all[aria-pressed="true"]{background:#21483f}
 #testQuestionId{font-size:.7rem;color:#c7d2e8;overflow-wrap:anywhere}
 #testCurrentBars>div>span:first-child{display:none}
+
+/* Stats navigation is available outside revision selection and active questions. */
+.stats-tile{text-decoration:none}
+.test-selecting .stats-tile,.test-revising .stats-tile{display:none!important}
