@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dot-and-Cross Diagrams · Masters of A Level Chemistry</title>
+<meta name="description" content="Build and check ionic and covalent dot-and-cross diagrams across three levels.">
+<link rel="icon" href="../../assets/SJS-Eagle.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/shared-theme.css"><link rel="stylesheet" href="styles.css">
+<script defer src="../../assets/active-question-time.js"></script>
+<script defer src="../../assets/test-mode-bridge.js"></script><script defer src="../../assets/alevel-mastery.js"></script><script defer src="../../assets/question-review.js"></script><script defer src="data.js"></script><script defer src="core.js"></script><script defer src="renderer.js"></script><script defer src="app.js"></script>
+</head>
+<body><main class="page">
+<header class="brand"><a class="brand-mark mode-mark" href="../../index.html" aria-label="Back to A Level Chemistry activity map"><img src="../../assets/SJS-Eagle.svg" width="34" height="44" alt="St John's School eagle"></a><div><p class="eyebrow">A LEVEL CHEMISTRY · BONDING</p><h1>Dot-and-Cross <span>Diagrams</span></h1><p id="levelBadge" class="eyebrow">LEVEL 1</p></div><a class="back" href="../../index.html">← Activity map</a></header>
+<div id="teacherControls" class="teacher-controls" hidden><label for="teacherQuestion">Choose question</label><select id="teacherQuestion" aria-label="Choose exact question"></select></div>
+<section class="panel question-panel" aria-label="Question">
+ <div class="heading-row"><h2 id="prompt" data-question-title></h2><span id="questionId" class="tag review-id" aria-label="Question ID"></span></div>
+</section>
+<section class="panel editor" aria-label="Diagram builder">
+ <div class="toolbar" role="toolbar" aria-label="Drawing palette">
+  <div class="palette-group element-palette" role="group" aria-label="Element palette">
+   <button type="button" class="element-tool" data-element="H" aria-pressed="true" aria-label="H atom" title="Hydrogen (H)">H</button><button type="button" class="element-tool" data-element="C" aria-pressed="false" aria-label="C atom" title="Carbon (C)">C</button><button type="button" class="element-tool" data-element="N" aria-pressed="false" aria-label="N atom" title="Nitrogen (N)">N</button><button type="button" class="element-tool" data-element="O" aria-pressed="false" aria-label="O atom" title="Oxygen (O)">O</button><button type="button" class="element-tool" data-element="F" aria-pressed="false" aria-label="F atom" title="Fluorine (F)">F</button><button type="button" class="element-tool" data-element="Cl" aria-pressed="false" aria-label="Cl atom" title="Chlorine (Cl)">Cl</button><button type="button" class="element-tool" data-element="Na" aria-pressed="false" aria-label="Na atom" title="Sodium (Na)">Na</button><button type="button" class="element-tool" data-element="Mg" aria-pressed="false" aria-label="Mg atom" title="Magnesium (Mg)">Mg</button><button type="button" class="element-tool" data-element="Ca" aria-pressed="false" aria-label="Ca atom" title="Calcium (Ca)">Ca</button>
+  </div>
+  <span class="divider" aria-hidden="true"></span>
+  <div class="palette-group symbol-tools" role="group" aria-label="Electron and edit tools">
+   <button type="button" class="tool symbol-tool" data-tool="dot" aria-pressed="false" aria-label="Dot electron" title="Place a dot electron">● <span>Dot</span></button><button type="button" class="tool symbol-tool" data-tool="cross" aria-pressed="false" aria-label="Cross electron" title="Place a cross electron">× <span>Cross</span></button><button type="button" class="tool symbol-tool" data-tool="triangle" aria-pressed="false" aria-label="Triangle electron" title="Place a triangle electron">▲ <span>Triangle</span></button><button type="button" class="tool erase-tool" data-tool="erase" aria-pressed="false" aria-label="Erase" title="Erase an atom, electron or charge">⌫ <span>Erase</span></button>
+  </div>
+  <div class="palette-group charge-tools" role="group" aria-label="Charge tools">
+   <button type="button" class="tool charge-tool" data-charge="3" aria-pressed="false" aria-label="3 plus charge" title="Apply a 3+ charge">3+</button><button type="button" class="tool charge-tool" data-charge="2" aria-pressed="false" aria-label="2 plus charge" title="Apply a 2+ charge">2+</button><button type="button" class="tool charge-tool" data-charge="1" aria-pressed="false" aria-label="1 plus charge" title="Apply a 1+ charge">1+</button><button type="button" class="tool charge-tool" data-charge="-1" aria-pressed="false" aria-label="1 minus charge" title="Apply a 1− charge">1−</button><button type="button" class="tool charge-tool" data-charge="-2" aria-pressed="false" aria-label="2 minus charge" title="Apply a 2− charge">2−</button><button type="button" class="tool charge-tool" data-charge="-3" aria-pressed="false" aria-label="3 minus charge" title="Apply a 3− charge">3−</button>
+  </div>
+  <span class="divider" aria-hidden="true"></span>
+  <div class="palette-group history-tools" role="group" aria-label="Diagram history">
+   <button type="button" class="tool history-tool" id="undo" disabled title="Undo the last edit">Undo</button><button type="button" class="tool history-tool" id="redo" disabled title="Redo the last undone edit">Redo</button><button type="button" class="tool history-tool" id="clear" title="Clear the diagram">Clear</button>
+  </div>
+  <button type="button" class="tool circles-tool" id="circles" aria-pressed="true" title="Show circles">Show circles</button>
+ </div>
+ <div class="workspace">
+ <div class="drawing-area">
+ <div class="canvas-wrap"><svg id="canvas" viewBox="0 0 1000 650" tabindex="0" role="group" aria-label="Dot-and-cross drawing canvas. Use arrow keys to move the drawing cursor and Enter to place an atom."></svg></div>
+ <p id="status" role="status" aria-live="polite" class="status visually-hidden">Select or drag an element to the canvas.</p>
+ </div>
+<aside class="panel marking" aria-label="Check your answer"><div class="actions"><button id="check" class="primary">Check diagram</button><button id="showAnswer" disabled>Show answer</button><button id="next">Next question →</button></div><div id="feedback" aria-live="polite"></div></aside>
+ </div>
+</section>
+<dialog id="answer" aria-labelledby="answerTitle"><button type="button" id="closeAnswer" aria-label="Close answer">Close</button><h3 id="answerTitle">Checked answer</h3><svg id="answerCanvas" viewBox="0 0 1000 650" role="img" aria-label="Checked dot-and-cross answer"></svg><p id="explanation"></p></dialog>
+</main><noscript>This activity needs JavaScript enabled.</noscript>
+</body></html>

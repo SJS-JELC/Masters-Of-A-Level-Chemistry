@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a1d">
+  <title>Stats · Masters of A Level Chemistry</title>
+  <link rel="icon" href="assets/SJS-Eagle.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/shared-theme.css">
+  <link rel="stylesheet" href="landing/ocr.css">
+  <link rel="stylesheet" href="assets/alevel-mastery.css">
+  <link rel="stylesheet" href="assets/alevel-stats.css">
+  <script defer src="landing/catalog.js"></script>
+  <script defer src="assets/alevel-mastery.js"></script>
+  <script defer src="assets/alevel-stats-core.js"></script>
+  <script defer src="assets/alevel-stats.js"></script>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <a class="skip-link" href="#statsTopics">Skip to topic breakdown</a>
+  <main class="ocr-shell stats-shell">
+    <header class="ocr-brand stats-brand">
+      <img src="assets/SJS-Eagle.svg" alt="St John's School eagle" width="44" height="52">
+      <div><p class="eyebrow">MASTERS OF A LEVEL CHEMISTRY</p><h1>Your <span>Stats</span></h1></div>
+      <a class="site-back-link" href="index.html">← Course map</a>
+    </header>
+    <div class="stats-intro"><div><h2>See your progress.</h2><p>Explore your recorded results, one topic and gem at a time.</p></div><p class="stats-local">Stored in this browser</p></div>
+    <form class="stats-filters" aria-label="Filter response statistics">
+      <label>Course<select id="statsYear"><option value="all">All years</option><option value="l6">Lower Sixth</option><option value="u6">Upper Sixth</option></select></label>
+      <fieldset id="statsPeriod" class="stats-period"><legend>Responses from</legend><div><button type="button" data-days="0" aria-pressed="true">All time</button><button type="button" data-days="1" aria-pressed="false">Day</button><button type="button" data-days="7" aria-pressed="false">Week</button><button type="button" data-days="30" aria-pressed="false">Month</button></div></fieldset>
+    </form>
+    <p id="statsNotice" class="stats-notice" role="status" hidden></p>
+    <p id="statsAnnouncement" class="stats-sr" role="status" aria-live="polite"></p>
+    <section id="statsOverview" class="stats-overview" aria-label="Your overview"></section>
+    <p class="stats-explanation">Response accuracy counts fully correct recorded attempts. Current mastery uses all current-progression attempts, weighted towards recent results; the white marker is the 80% threshold.</p>
+    <section class="stats-chart-card" aria-labelledby="statsChartHeading">
+      <div class="stats-section-heading"><div><p class="eyebrow">YOUR PRACTICE OVER TIME</p><h2 id="statsChartHeading">Daily practice time</h2></div><p id="statsChartTotal"></p></div>
+      <p id="statsChartPeriod" class="stats-outcome-text"></p>
+      <div class="stats-legend" aria-label="Chart outcomes"><span class="correct">✓ Correct</span><span class="partial">◐ Partly correct</span><span class="incorrect">× Incorrect</span></div>
+      <p id="statsChartEmpty" class="stats-outcome-text" hidden>No recorded timing data in this period. Attempts without timing data are not included in the bars.</p>
+      <div class="stats-chart-layout"><div id="statsChartAxis" class="stats-chart-axis" aria-hidden="true"></div><div class="stats-chart-scroll" tabindex="0" role="region" aria-label="Daily active practice time by answer outcome; scroll horizontally to explore all days"><div id="statsChartBars" class="stats-chart-bars"></div></div></div>
+      <p id="statsChartDetail" class="stats-chart-detail" role="status">Select a bar for the full breakdown.</p>
+      <p class="stats-outcome-text">Each bar shows the total recorded active time for that day, coloured by answer outcome. Select a bar for the time breakdown; scroll sideways when needed. Attempts without timing data are excluded. Time is assigned to the answer’s completion date in this device’s local time.</p>
+    </section>
+    <section aria-labelledby="statsTopicsHeading" id="statsTopics" tabindex="-1">
+      <div class="stats-section-heading"><div><p class="eyebrow">FROM TOPIC TO GEM</p><h2 id="statsTopicsHeading">Your topic breakdown</h2></div><p>Open a topic to explore its gems ↓</p></div>
+      <div class="stats-legend" aria-label="Response outcomes"><span class="correct">✓ Correct</span><span class="partial">◐ Partly correct</span><span class="incorrect">× Incorrect</span></div>
+      <p id="statsEmpty" class="stats-empty" hidden></p>
+      <div id="statsTopicList"></div>
+    </section>
+    <details id="statsHistory" class="stats-history"><summary>Earlier practice history <span id="statsHistoryCount"></span></summary><p>Previous progression versions and retired levels. These results are excluded from the overview and current mastery. The course and date filters also apply here.</p><div id="statsHistoryRows"></div></details>
+    <footer class="stats-footer">Includes recorded standalone practice and revision. Activities without saved assessment records cannot contribute to these stats. Your full written answers are not stored in this history.</footer>
+    <noscript><p>Enable JavaScript to see your saved statistics.</p></noscript>
+  </main>
+</body>
+</html>
