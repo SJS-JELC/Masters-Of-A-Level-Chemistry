@@ -1,0 +1,17 @@
+/* App-owned copy of the functioning IGCSE practice-card design. */
+.practice-choices { display: grid; gap: 10px; }
+.practice-choice { display: flex; flex-direction: column; gap: 6px; padding: 15px 18px; border: 1px solid currentColor; border-radius: 13px; text-decoration: none; background: rgba(255,255,255,.035); }
+.practice-choice strong { font-size: 1rem; }
+.practice-choice > span { font-size: .72rem; color: var(--muted, #a9b3ca); line-height: 1.5; }
+.practice-choice[data-practice="mastery"] { color: #55f6ff; }
+.practice-choice[data-practice="1"] { color: #ffde59; }
+.practice-choice[data-practice="2"] { color: #54f5b5; }
+.practice-choice[data-practice="3"] { color: #c59aff; }
+.practice-choice:hover,.practice-choice:focus-visible { background: rgba(255,255,255,.085); outline: 2px solid currentColor; outline-offset: 2px; }
+.mastery-bar.mastery-bar { display:block; position:relative; width:100%; height:12px; min-height:12px; flex:0 0 100%; margin:9px 0; padding:0; border:1px solid #65708b; border-radius:4px; background:#11182d; overflow:visible; box-sizing:border-box; }
+.mastery-bar[data-level="1"] { --mastery-colour:#ffde59; }
+.mastery-bar[data-level="2"] { --mastery-colour:#54f5b5; }
+.mastery-bar[data-level="3"] { --mastery-colour:#c59aff; }
+.mastery-bar > .mastery-bar-fill { display:block; position:absolute; inset:0 auto 0 0; width:var(--mastery-fill,0%); height:100%; margin:0; padding:0; border-radius:3px; background:var(--mastery-colour,#54f5b5); }
+.mastery-bar > .mastery-bar-threshold { display:block; position:absolute; left:var(--mastery-threshold,80%); top:-4px; bottom:-4px; width:2px; margin:0; padding:0; transform:translateX(-50%); background:#fff; box-shadow:0 0 0 1px #11182d; }
+.mastery-save-warning { color: #ffde59; font-size: .85rem; }

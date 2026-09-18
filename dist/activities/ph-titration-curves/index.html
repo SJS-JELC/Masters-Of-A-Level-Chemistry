@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a1d">
+  <title>pH titration curves · OCR A Chemistry</title>
+  <link rel="stylesheet" href="../../assets/shared-theme.css">
+  <link rel="stylesheet" href="../../assets/ocr-navigation.css">
+  <link rel="stylesheet" href="../../assets/alevel-mastery.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="../../assets/SJS-Eagle.svg" type="image/svg+xml">
+  <script src="../../assets/site-version.js"></script>
+  <script src="../../assets/question-review.js"></script>
+  <script src="../../assets/test-mode-bridge.js"></script>
+  <script src="../../assets/alevel-mastery.js"></script>
+  <script src="../../assets/active-question-time.js"></script>
+  <script src="data.js"></script>
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+  <script src="session.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#activity">Skip to activity</a>
+  <main class="page" id="activity">
+    <header class="site-header">
+      <a class="ocr-home-link site-back-link" href="../../index.html" aria-label="Back to A Level Chemistry"><span aria-hidden="true">←</span> OCR A Chemistry</a>
+      <span class="eyebrow">OCR A · 5.1.3 ACIDS, BASES AND BUFFERS</span>
+    </header>
+
+    <section class="intro" aria-labelledby="activity-title">
+      <div>
+        <p class="kicker">CURVE BUILDER / LEVELS 2 &amp; 3</p>
+        <h1 id="activity-title">Build a <span>pH titration curve</span></h1>
+        <p class="lead">Choose the curve halves, position the pH endpoints and equivalence volume, then select a suitable indicator.</p>
+      </div>
+      <div class="intro-side"><nav class="level-options" aria-label="Practice level"><a data-practice-level="2" href="?practice=level&amp;level=2">Level 2 · Simple ratios</a><a data-practice-level="3" href="?practice=level&amp;level=3">Level 3 · Harder ratios</a></nav>
+      <div class="progress-pill" aria-live="polite"><span id="question-counter">Question 1</span><strong id="question-status">In progress</strong></div>
+      </div>
+    </section>
+
+    <section class="question-card" aria-labelledby="question-title">
+      <div class="question-heading">
+        <div><p class="kicker">QUESTION</p><h2 id="question-title" data-question-title>Loading question…</h2></div>
+        <div class="question-heading-side"><span class="review-id" id="review-id"></span><span class="level-badge">A LEVEL</span></div>
+      </div>
+      <p id="question-prompt" class="question-prompt"></p>
+    </section>
+
+    <section class="builder-layout" aria-label="Titration curve builder">
+      <aside class="piece-panel" aria-label="Curve halves and indicator choices">
+        <div class="piece-group"><h3>Before equivalence</h3><div id="before-pieces" class="piece-grid" role="group" aria-label="Before equivalence curve choices"></div></div>
+        <div class="piece-group"><h3>After equivalence</h3><div id="after-pieces" class="piece-grid" role="group" aria-label="After equivalence curve choices"></div></div>
+        <section class="indicator-panel" aria-labelledby="indicator-title">
+          <h3 id="indicator-title">Suitable indicator</h3>
+          <p class="indicator-direction">Acid → Alkali</p>
+          <div id="indicator-options" class="indicator-options" role="group" aria-labelledby="indicator-title"></div>
+        </section>
+      </aside>
+
+      <section class="graph-panel" aria-labelledby="graph-title">
+        <div class="panel-heading graph-heading"><div><p class="kicker">02 · ANCHOR THE CURVE</p><h2 id="graph-title">Shape, scale and key points</h2></div><span id="curve-status" class="status-text">Choose both curve halves</span></div>
+        <div class="chart-wrap">
+          <svg id="curve-chart" viewBox="0 0 820 460" role="group" aria-labelledby="chart-title chart-description" tabindex="0">
+            <title id="chart-title">Interactive pH titration curve</title>
+            <desc id="chart-description">A graph of pH against volume of sodium hydroxide added. Drag an anchor or focus it and use the arrow keys.</desc>
+            <defs><linearGradient id="curve-glow" x1="0" x2="1"><stop offset="0" stop-color="#81e6cf"/><stop offset="1" stop-color="#b9a0ff"/></linearGradient><filter id="soft-glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <g id="chart-grid"></g><g id="chart-labels"></g><g id="chart-guides"></g><path id="before-curve" class="curve curve-before"></path><path id="after-curve" class="curve curve-after"></path><g id="chart-handles"></g>
+          </svg>
+        </div>
+        <p class="keyboard-help">Drag a glowing handle, or focus it and use <kbd>↑</kbd><kbd>↓</kbd> <kbd>←</kbd><kbd>→</kbd>. pH snaps to 0.1; volume snaps to 0.5 cm³. <span class="mobile-hint">Swipe the graph sideways on a small screen.</span></p>
+      </section>
+    </section>
+
+    <section class="answer-panel" aria-labelledby="answer-title">
+      <div class="answer-copy"><p class="kicker">03 · CHECK YOUR MODEL</p><h2 id="answer-title">Does the curve fit the chemistry?</h2><p id="feedback" role="status" aria-live="polite">Make your selections, set the anchors, then check your answer.</p></div>
+      <div class="answer-actions" id="answer-actions"><button id="undo" type="button" class="button secondary" disabled>↶ Undo</button><button id="reset" type="button" class="button secondary">Reset</button><button id="check" type="button" class="button primary">Check answer</button><button id="reveal" type="button" class="button reveal">Reveal answer</button><button id="next" type="button" class="button next" hidden>Next question →</button></div>
+    </section>
+
+    <footer class="site-footer">OCR A Chemistry · Acids, bases and buffers · Use mol dm<sup>−3</sup> and cm³ throughout · <a href="https://www.ocr.org.uk/images/171720-specification-accredited-a-level-gce-chemistry-a-h432.pdf">OCR A specification</a></footer>
+  </main>
+</body>
+</html>

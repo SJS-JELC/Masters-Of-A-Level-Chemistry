@@ -1,0 +1,4 @@
+.ocr-home-link { display: inline-block; margin: 12px 20px 0; padding: 7px 12px; border: 1px solid currentColor; border-radius: 7px; color: inherit; font: 600 14px/1.5 system-ui, sans-serif; text-decoration: none; }
+.ocr-home-link:hover { text-decoration: underline; }
+.ocr-home-link:focus-visible { outline: 3px solid #d09500; outline-offset: 3px; }
+@media print { .ocr-home-link { display: none; } }
