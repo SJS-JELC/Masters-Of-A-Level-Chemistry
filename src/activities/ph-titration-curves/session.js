@@ -26,6 +26,7 @@
   let savedPractice = null;
   let titleTimer = null;
   let attemptId = null;
+  let timing;
   const recordedAttempts = new Set();
 
   const copy = value => {
@@ -117,7 +118,7 @@
     if (bridge || reviewMode() || !currentId || !currentState) return;
     if (!attemptId) attemptId = makeAttemptId();
     const value = {version: PRACTICE_VERSION, leafId: LEAF, level: activeLevel,
-      questionId: currentId, attemptId: attemptId || makeAttemptId(), state: copy(currentState)};
+      questionId: currentId, attemptId: attemptId || makeAttemptId(), state: copy(currentState), timing};
     try { root.localStorage?.setItem(practiceStore(), JSON.stringify(value)); }
     catch (_) { /* the activity remains usable for this page */ }
   }
@@ -127,7 +128,7 @@
     return {version: VERSION, leafId: LEAF, level: activeLevel, questionId: currentId,
       attemptId: attemptId || bridge?.attemptId || makeAttemptId(),
       state: copy(currentState), result: currentResult ? copy(currentResult) : null,
-      completedAt: currentResult ? Date.now() : null};
+      completedAt: currentResult ? Date.now() : null, timing};
   }
 
   function validSnapshot(value) {
@@ -154,7 +155,15 @@
   }
 
   function save() {
+    if (reviewMode()) { root.ActiveQuestionTime.stop(); return; }
     if (suppressPersistence || reviewMode() || !currentId || !currentState) return;
+    if (!attemptId) attemptId = bridge?.attemptId || makeAttemptId();
+    const timingId = attemptId;
+    timing = root.ActiveQuestionTime.start({id: timingId, idleLimitMs: root.ActiveQuestionTime.allowance('titration', question(currentId)),
+      saved: timing, completed: Boolean(currentState.attempted || currentResult), onCheckpoint: value => {
+        if (attemptId !== timingId) return;
+        timing = value; save();
+      }});
     if (bridge) {
       try { void bridge.save(revisionSnapshot()); } catch (_) {}
     } else writePractice();
@@ -201,6 +210,7 @@
     if (!validId(incomingId)) return;
 
     if (reviewMode()) {
+      root.ActiveQuestionTime.stop();
       currentId = incomingId; currentState = safeState(incomingState); currentResult = currentState?.result || null;
       parentTitle(); return;
     }
@@ -211,6 +221,7 @@
       // last completed question and must not be restored as a new attempt.
       const saved = validSnapshot(bridge.state) ? bridge.state : null;
       if (saved) {
+        timing = saved.timing;
         currentResult = saved.result ? copy(saved.result) : null;
         reported = Boolean(currentResult);
         attemptId = saved.attemptId || bridge.attemptId || makeAttemptId();
@@ -236,6 +247,7 @@
       restored = true;
       savedPractice = readPractice();
       if (savedPractice) {
+        timing = savedPractice.timing;
         attemptId = savedPractice.attemptId || makeAttemptId();
         if (restore(savedPractice.questionId, savedPractice.state)) return;
       }
@@ -260,6 +272,7 @@
     const id = detail.questionId || app?.getQuestion?.()?.id || currentId;
     if (!validId(id) || (!reviewMode() && Number(question(id)?.level) !== activeLevel)) return;
     if (id !== currentId) {
+      timing = undefined;
       attemptId = bridge?.attemptId || (typeof detail.state?.attemptId === 'string' ? detail.state.attemptId : makeAttemptId());
       currentResult = null;
       reported = false;
@@ -284,13 +297,14 @@
     const independent = firstAttempt && !assisted;
     const score = masteryScore(currentResult);
     if (!attemptId) attemptId = makeAttemptId();
+    root.ActiveQuestionTime.finish();
     save();
 
     if (bridge) {
       if (reported) return;
       reported = true;
       const completedAt = Date.now();
-      const evidence = independent ? {score, result: copy(currentResult)} : null;
+      const evidence = independent ? {score, result: copy(currentResult), timing: root.ActiveQuestionTime.result(timing)} : null;
       try {
         await bridge.result({score, independent, completedAt, evidence});
       } catch (_) { reported = false; }
@@ -305,7 +319,7 @@
     if (recordedAttempts.has(recordId)) return;
     try {
       root.ALevelMastery.record({id: recordId, leafId: LEAF, level: activeLevel,
-        score, completedAt: Date.now()});
+        score, completedAt: Date.now(), timing: root.ActiveQuestionTime.result(timing)});
       recordedAttempts.add(recordId);
     } catch (_) { /* preserve the answer in the activity's local session */ }
   }
