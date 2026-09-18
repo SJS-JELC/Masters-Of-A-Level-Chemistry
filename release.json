@@ -1,10 +1,24 @@
 {
   "name": "Masters-of-A-Level-Chemistry",
   "activities": [
+    "electrons-bonding",
+    "dot-and-cross",
     "electron-configurations",
-    "acid-base-calculations"
+    "acid-base-calculations",
+    "ph-titration-curves"
   ],
   "files": [
+    "activities/electrons-bonding/app.js",
+    "activities/electrons-bonding/core.js",
+    "activities/electrons-bonding/data.js",
+    "activities/electrons-bonding/index.html",
+    "activities/electrons-bonding/styles.css",
+    "activities/dot-and-cross/app.js",
+    "activities/dot-and-cross/core.js",
+    "activities/dot-and-cross/data.js",
+    "activities/dot-and-cross/index.html",
+    "activities/dot-and-cross/renderer.js",
+    "activities/dot-and-cross/styles.css",
     ".nojekyll",
     "Masters of A Level Chemistry.html",
     "activities/acid-base-calculations/core.js",
@@ -22,9 +36,19 @@
     "activities/electron-configurations/levels.js",
     "activities/electron-configurations/session.js",
     "activities/electron-configurations/styles.css",
+    "activities/ph-titration-curves/app.js",
+    "activities/ph-titration-curves/core.js",
+    "activities/ph-titration-curves/data.js",
+    "activities/ph-titration-curves/index.html",
+    "activities/ph-titration-curves/session.js",
+    "activities/ph-titration-curves/styles.css",
     "assets/SJS-Eagle.svg",
+    "assets/active-question-time.js",
     "assets/alevel-mastery.css",
     "assets/alevel-mastery.js",
+    "assets/alevel-stats-core.js",
+    "assets/alevel-stats.css",
+    "assets/alevel-stats.js",
     "assets/fonts/Comfortaa-Bold.ttf",
     "assets/fonts/OFL-Comfortaa.txt",
     "assets/ocr-navigation.css",
@@ -42,6 +66,7 @@
     "index.html",
     "landing/app.js",
     "landing/catalog.js",
-    "landing/ocr.css"
+    "landing/ocr.css",
+    "stats.html"
   ]
 }
