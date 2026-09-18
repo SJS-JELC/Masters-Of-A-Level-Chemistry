@@ -276,6 +276,13 @@
     const previousId=test.previous?.questionId;
     if(queue.length>1&&previousId)queue=queue.filter(q=>q.id!==previousId);
     const hash=Array.from(String(test.attemptId||'')).reduce((n,ch)=>(Math.imul(n^ch.charCodeAt(0),16777619)>>>0),2166136261)>>>0;
+    if(category==='all'&&grade<=2){
+      const ids=queue.map(q=>q.id);
+      const previous=byId(previousId);
+      const selected=selectFreshQuestion(ids,previous?questionCategory(previous):null,hash/4294967296);
+      if(Array.isArray(restore?.remaining))restore.remaining.splice(0,restore.remaining.length,...ids);
+      return selected||candidates[0];
+    }
     return queue[hash%queue.length]||candidates[0];
   }
   function load(id,restore=null,fresh=false){
@@ -304,11 +311,25 @@
     $('questionId').textContent=reviewBank.id(question);$('questionId').dataset.question=id;if(teacher)$('teacherQuestion').value=id;cursor={x:400,y:325};showCursor=false;setTool('atom');
     $('showAnswer').disabled=!teacher&&!checked;$('showAnswer').textContent='Show answer';if(feedbackResult)feedbackFor(feedbackResult);else $('feedback').replaceChildren();syncTestControls();save();saveTest();if(test&&assessment)emitAssessment();
   }
-  function selectFreshQuestion(ids,previousCategory=null){
-    const eligible=ids.map(id=>questions.find(q=>q.id===id)).filter(q=>q&&pool().some(item=>item.id===q.id));
+  function selectFreshQuestion(ids,previousCategory=null,random=Math.random()){
+    const available=pool();
+    let eligible=ids.map(id=>questions.find(q=>q.id===id)).filter(q=>q&&available.some(item=>item.id===q.id));
+    // Alternate categories at Levels 1 and 2; cycle each category independently
+    // so the larger ionic bank cannot dominate after covalent items run out.
+    if(!teacher&&category==='all'&&grade<=2){
+      const categories=['ionic','covalent'].filter(type=>available.some(q=>questionCategory(q)===type));
+      const desired=categories.find(type=>previousCategory&&type!==previousCategory)||categories[Math.floor(random*categories.length)];
+      let balanced=eligible.filter(q=>questionCategory(q)===desired);
+      if(!balanced.length){
+        balanced=available.filter(q=>questionCategory(q)===desired);
+        for(const q of balanced)if(!ids.includes(q.id))ids.push(q.id);
+      }
+      eligible=balanced;
+      if(!previousCategory&&categories.length)random=(random*categories.length)%1;
+    }
     if(!eligible.length)return null;
     const selection=eligible;
-    return selection[Math.floor(Math.random()*selection.length)];
+    return selection[Math.floor(random*selection.length)];
   }
   $('next').addEventListener('click',()=>{if(!teacher&&!assessment){say('Check this diagram before continuing.');return;}if(test){B.next();return;}if(practice==='mastery'){refreshMastery();const nextGrade=selectMasteryGrade();if(nextGrade!==grade){grade=nextGrade;remaining=[];} }if(!remaining.length)remaining=pool().map(q=>q.id).filter(id=>id!==question.id);const next=selectFreshQuestion(remaining,questionCategory(question));load(next?.id||question.id,null,true);});
   $('check').addEventListener('click',async()=>{
