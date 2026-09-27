@@ -38,6 +38,7 @@
     catch (_) { showStorageWarning("Progress is being kept for this open page, but this browser blocked local storage."); }
   }
   function load() {
+    if (globalThis.ActivityLaunch?.fresh) return null;
     try {
       const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
       return validSession(parsed) ? parsed : null;
@@ -125,7 +126,11 @@
       row.querySelector(".response-feedback").textContent = result.status === "correct" ? "Correct." : "Check this value.";
     });
   }
-  function renderWorked() { elements.workedContent.innerHTML = question.working.map(line => `<p>${notation(line)}</p>`).join(""); elements.workedAnswer.hidden = false; }
+  function renderWorking(lines) {
+    return lines.flatMap(line => String(line).split(";")).map(line => line.trim()).filter(Boolean)
+      .map(line => `<p>${notation(line)}</p>`).join("");
+  }
+  function renderWorked() { elements.workedContent.innerHTML = renderWorking(question.working); elements.workedAnswer.hidden = false; }
   function resultMessage(score) { return score === 1 ? "All required values are correct." : score === 0.5 ? "Some required values are correct." : "None of the required values is correct yet."; }
   function recordFirstAttempt() {
     const current = session.current;
@@ -175,7 +180,7 @@
     elements.changeRoute.href = "index.html"; elements.changeRoute.textContent = "Choose practice";
     const targets = reviewed.responses.map((response, index) => `<div class="response-row"><p>${reviewed.responses.length > 1 ? `<span class="part-label">${String.fromCharCode(97 + index)}</span> ` : ""}${notation(response.prompt)}</p><div class="review-answer-line">${notation(response.symbol)} = ____________________ ${notation(response.unit || "")}</div></div>`).join("");
     elements.questionPanel.innerHTML = `<header class="question-header"><div><p class="question-meta">READ-ONLY REVIEW</p><h3>${notation(reviewed.templateLabel)}</h3></div><span class="review-id">${escapeHtml(reviewed.reviewId)}</span></header><p>${notation(reviewed.intro)}</p>${dataRows(reviewed)}<div class="response-list">${targets}</div>`;
-    elements.workedContent.innerHTML = reviewed.working.map(line => `<p>${notation(line)}</p>`).join("");
+    elements.workedContent.innerHTML = renderWorking(reviewed.working);
     elements.workedAnswer.hidden = false;
   }
   function fallbackChoices() {

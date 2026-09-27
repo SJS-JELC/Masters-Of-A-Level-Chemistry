@@ -57,6 +57,7 @@
   }
 
   function readPractice() {
+    if (globalThis.ActivityLaunch?.fresh) return null;
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
       if (!validSnapshot(saved, pool())) return null;

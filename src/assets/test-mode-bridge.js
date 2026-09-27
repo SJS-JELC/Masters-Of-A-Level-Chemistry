@@ -1,6 +1,16 @@
 (function (root) {
   'use strict';
   const params = new URLSearchParams(location.search);
+  // Landing-page launches discard only the standalone attempt. Consume the
+  // marker so reloading this visit can still restore its timing and answers.
+  const fresh = params.get('fresh') === '1' && root.parent === root &&
+    !params.has('testSession') && !params.has('review');
+  root.ActivityLaunch = Object.freeze({ fresh });
+  if (params.has('fresh')) {
+    const url = new URL(location.href);
+    url.searchParams.delete('fresh');
+    try { history.replaceState(history.state, '', url.href); } catch (_) {}
+  }
   const sessionId = params.get('testSession'), attemptId = params.get('testAttempt');
   const enabled = Boolean(sessionId && attemptId && root.parent !== root);
   let connection;

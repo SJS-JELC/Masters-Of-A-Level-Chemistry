@@ -198,7 +198,7 @@
     node.innerHTML = '<span class="mastery-bar-fill" aria-hidden="true"></span><span class="mastery-bar-threshold" aria-hidden="true"></span>';
     return node;
   }
-  function renderChoices(container, {leafId, href}) {
+  function renderChoices(container, {leafId, href, fresh = Boolean(root.ActivityLaunch?.fresh)}) {
     if (!Object.hasOwn(config, leafId)) throw Error('Unknown mastery activity.');
     container.replaceChildren(); container.classList.add('practice-choices');
     const labelsForLeaf = config[leafId].levelLabels;
@@ -206,6 +206,7 @@
       const link = root.document.createElement('a'), label = root.document.createElement('strong'), detail = root.document.createElement('span');
       link.className = 'practice-choice'; link.dataset.practice = String(option);
       const url = new URL(href, root.document.baseURI);
+      if (fresh) url.searchParams.set('fresh', '1');
       url.searchParams.set('leaf', leafId); url.searchParams.set('practice', option === 'mastery' ? 'mastery' : 'level');
       if (option !== 'mastery') url.searchParams.set('level', option); else url.searchParams.delete('level');
       link.href = url.href;

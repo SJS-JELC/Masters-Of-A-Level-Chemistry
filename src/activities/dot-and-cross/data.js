@@ -21,8 +21,13 @@
   };
   var ATLAS_EVIDENCE=Object.fromEntries(Object.entries(atlasAnchors).map(function(entry){return [entry[0],entry[1].map(function(anchor){return {questionId:anchor[0],observedBand:anchor[1],basis:'resources/past-paper-atlas/data/atlas.json classification.band',relationship:entry[0]==='lithium-oxide'?'electron-configuration explanation; original practice prompt':'diagram motif; original practice prompt'};})];}));
   var viewBox = { width: 1000, height: 650, atomRadius: 64, hydrogenRadius: 40, bondLength: 104, shellOverlap: 24 };
-  function shellRadius(atomOrElement) { return (typeof atomOrElement === 'string' ? atomOrElement : atomOrElement.element) === 'H' ? 40 : 64; }
-  function bondDistance(a, b) { return shellRadius(a) + shellRadius(b) - viewBox.shellOverlap; }
+  function shellRadius(atomOrElement, questionId) {
+    var element = typeof atomOrElement === 'string' ? atomOrElement : atomOrElement.element;
+    if ((questionId === 'phosphorus-pentachloride' && element === 'P') ||
+        (questionId === 'sulfur-hexafluoride' && element === 'S')) return 100;
+    return element === 'H' ? 40 : 64;
+  }
+  function bondDistance(a, b, questionId) { return shellRadius(a, questionId) + shellRadius(b, questionId) - viewBox.shellOverlap; }
   var electronSlots = {
     atom: { directions: [-100, -80, -10, 10, 80, 100, 170, 190], radius: 64, hydrogenRadius: 40 },
     bond: { maxPairs: 3, centredInOverlap: true, perpendicularOffsets: [-5, 5], pairSpacing: 22 }
@@ -296,7 +301,9 @@
     var clf3 = questions.find(function (question) { return question.id === 'chlorine-trifluoride'; });
     [-90,0,180].forEach(function (degrees, i) { var a=clf3.reference.atoms.find(function(atom){return atom.id==='F'+(i+1);}),r=bondDistance('Cl','F'),t=degrees*Math.PI/180;a.x=500+r*Math.cos(t);a.y=325+r*Math.sin(t); });
     var pcl5=questions.find(function(question){return question.id==='phosphorus-pentachloride';});
-    [-90,-30,30,90,180].forEach(function(degrees,i){var a=pcl5.reference.atoms.find(function(atom){return atom.id==='Cl'+(i+1);}),r=bondDistance('P','Cl'),t=degrees*Math.PI/180;a.x=500+r*Math.cos(t);a.y=325+r*Math.sin(t);});
+    [-90,-30,30,90,180].forEach(function(degrees,i){var a=pcl5.reference.atoms.find(function(atom){return atom.id==='Cl'+(i+1);}),r=bondDistance('P','Cl',pcl5.id),t=degrees*Math.PI/180;a.x=500+r*Math.cos(t);a.y=325+r*Math.sin(t);});
+    var sf6=questions.find(function(question){return question.id==='sulfur-hexafluoride';});
+    [0,60,120,180,240,300].forEach(function(degrees,i){var a=sf6.reference.atoms.find(function(atom){return atom.id==='F'+(i+1);}),r=bondDistance('S','F',sf6.id),t=degrees*Math.PI/180;a.x=500+r*Math.cos(t);a.y=325+r*Math.sin(t);});
   }());
   function attachGainedElectronVariants(question, moves) {
     var variants=[];

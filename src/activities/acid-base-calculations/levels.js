@@ -454,7 +454,7 @@
     const nAcid = ca * va / 1000, nBase = cb * vb / 1000, excess = nBase - nAcid, totalV = (va + vb) / 1000, oh = excess / totalV, h = kw / oh, ph = phOf(h);
     return question(id, level, seed, "Sodium hydroxide is mixed with hydrochloric acid. The alkali is in excess and volumes are additive. Calculate the final pH at 25 °C.",
       [["[NaOH] / mol dm⁻³", scientific(cb)], ["NaOH volume / cm³", dp(vb, 1)], ["[HCl] / mol dm⁻³", scientific(ca)], ["HCl volume / cm³", dp(va, 1)], kwRow(kw)], [part(response("ph", "Calculate the final pH.", "pH", "", ph, "dp2"),
-        `HCl + NaOH → NaCl + H₂O`, `n(NaOH) = ${scientific(nBase)} mol; n(HCl) = ${scientific(nAcid)} mol`,
+        `HCl + NaOH → NaCl + H₂O`, `n(NaOH) = ${scientific(nBase)} mol`, `n(HCl) = ${scientific(nAcid)} mol`,
         `n(OH⁻) remaining = ${scientific(excess)} mol`, `[OH⁻] = ${scientific(excess)}/${dp(totalV, 4)} = ${scientific(oh)} mol dm⁻³`,
         `[H⁺] = K_w/[OH⁻] = ${scientific(h)} mol dm⁻³`, `pH = −log₁₀(${scientific(h)}) = ${dp(ph, 2)}`)]);
   }
@@ -563,7 +563,7 @@
       return question(id, level, seed, `${dp(acidV, 1)} cm³ of ${dp(acidC, 3)} mol dm⁻³ ${acid.name} is partially neutralised with ${dp(alkaliC, 3)} mol dm⁻³ sodium hydroxide, then diluted to ${dp(finalV, 1)} cm³. Calculate the alkali volume needed for pH ${dp(target, 2)}.`, [["K_a / mol dm⁻³", scientific(acid.ka)]], [part(response("volume", "Calculate the sodium hydroxide volume.", "Volume", "cm³", alkaliV),
         `[H⁺] = 10^(−${dp(target, 2)}) = ${scientific(h)} mol dm⁻³`, `n(A⁻)/n(HA) = K_a/[H⁺] = ${ratio.toPrecision(3)}`,
         `n(HA) initially = ${dp(acidC, 3)} × ${dp(acidV / 1000, 3)} = ${scientific(initial)} mol`,
-        `x/(${scientific(initial)} − x) = ${ratio.toPrecision(3)}; x = ${scientific(added)} mol OH⁻`,
+        `x/(${scientific(initial)} − x) = ${ratio.toPrecision(3)}`, `x = ${scientific(added)} mol OH⁻`,
         `V(NaOH) = x/c = ${scientific(added)}/${dp(alkaliC, 3)} = ${scientific(alkaliV / 1000)} dm³ = ${alkaliV.toPrecision(3)} cm³`,
         `Recipe: mix ${dp(acidV, 1)} cm³ acid with ${alkaliV.toPrecision(3)} cm³ NaOH, then make up to ${dp(finalV, 1)} cm³.`)], [bufferAudit(initial - added, added),
         { name: "preparation volume", valid: acidV + alkaliV < finalV, detail: `Combined reagent volume ${dp(acidV + alkaliV, 1)} cm³ is below the ${dp(finalV, 1)} cm³ final volume.` }]);
@@ -573,7 +573,7 @@
     return question(id, level, seed, `Prepare ${dp(finalV, 1)} cm³ of a pH ${dp(target, 2)} buffer using ${dp(acidStock, 3)} mol dm⁻³ ${acid.name} and ${dp(saltStock, 3)} mol dm⁻³ ${acid.sodiumSalt}. Use only these two solutions and assume their volumes are additive. Calculate the salt-stock volume.`, [["K_a / mol dm⁻³", scientific(acid.ka)]], [part(response("volume", "Calculate the salt-stock volume.", "Volume", "cm³", saltV),
       `[H⁺] = 10^(−${dp(target, 2)}) = ${scientific(h)} mol dm⁻³`, `n(A⁻)/n(HA) = K_a/[H⁺] = ${ratio.toPrecision(3)}`,
       `${dp(saltStock, 3)}V_s/[${dp(acidStock, 3)}(${dp(finalV, 1)} − V_s)] = ${ratio.toPrecision(3)}`,
-      `V_s = ${saltV.toPrecision(3)} cm³; V_acid = ${dp(finalV, 1)} − ${saltV.toPrecision(3)} = ${acidV.toPrecision(3)} cm³`,
+      `V_s = ${saltV.toPrecision(3)} cm³`, `V_acid = ${dp(finalV, 1)} − ${saltV.toPrecision(3)} = ${acidV.toPrecision(3)} cm³`,
       `Recipe: mix ${acidV.toPrecision(3)} cm³ acid stock with ${saltV.toPrecision(3)} cm³ salt stock.`)], [bufferAudit(acidStock * acidV / 1000, saltStock * saltV / 1000)]);
   }
 
@@ -621,7 +621,7 @@
       const nHA = pick(rng, [0.0180, 0.0200, 0.0240]), nA = pick(rng, [0.0180, 0.0210, 0.0240]), added = pick(rng, [0.00100, 0.00150, 0.00200]), acidAddition = rng() < 0.5;
       const newHA = acidAddition ? nHA + added : nHA - added, newA = acidAddition ? nA - added : nA + added, h = acid.ka * newHA / newA, ph = phOf(h), reagent = acidAddition ? "hydrochloric acid" : "sodium hydroxide";
       return question(id, level, seed, `A ${acid.name}/${acid.sodiumSalt} buffer contains ${scientific(nHA)} mol acid and ${scientific(nA)} mol conjugate base. ${scientific(added)} mol ${reagent} is added. Calculate the new pH.`, [["K_a / mol dm⁻³", scientific(acid.ka)]], [part(response("ph", "Calculate the new pH.", "pH", "", ph, "dp2"),
-        `${acidAddition ? "A⁻ + H⁺ → HA" : "HA + OH⁻ → A⁻ + H₂O"}`, `n(HA) after reaction = ${scientific(newHA)} mol; n(A⁻) after reaction = ${scientific(newA)} mol`,
+        `${acidAddition ? "A⁻ + H⁺ → HA" : "HA + OH⁻ → A⁻ + H₂O"}`, `n(HA) after reaction = ${scientific(newHA)} mol`, `n(A⁻) after reaction = ${scientific(newA)} mol`,
         `[H⁺] = K_a n(HA)/n(A⁻) = ${scientific(acid.ka)} × ${scientific(newHA)}/${scientific(newA)} = ${scientific(h)} mol dm⁻³`,
         `pH = −log₁₀(${scientific(h)}) = ${dp(ph, 2)}`)], [bufferAudit(newHA, newA)]);
     }
@@ -630,10 +630,10 @@
       const intendedHA = targetAcidMass / acid.mr, intendedA = targetSaltMass / acid.saltMr, targetPH = phOf(acid.ka * intendedHA / intendedA);
       const actualAcidMass = targetAcidMass + acidError, actualSaltMass = targetSaltMass + saltError, actualHA = actualAcidMass / acid.mr, actualA = actualSaltMass / acid.saltMr, actualPH = phOf(acid.ka * actualHA / actualA), difference = Math.abs(actualPH - targetPH);
       return question(id, level, seed, `A ${acid.name}/${acid.sodiumSalt} buffer recipe specifies ${dp(targetAcidMass, 3)} g acid and ${dp(targetSaltMass, 3)} g salt. The acid weighing error is ${acidError >= 0 ? "+" : ""}${dp(acidError, 3)} g and the salt weighing error is ${saltError >= 0 ? "+" : ""}${dp(saltError, 3)} g. Calculate the absolute difference between the actual and intended pH.`, [["K_a / mol dm⁻³", scientific(acid.ka)], [`M_r(${acid.formula})`, dp(acid.mr, 1)], [`M_r(${acid.sodiumSaltFormula})`, dp(acid.saltMr, 1)]], [part(response("difference", "Calculate the absolute pH difference.", "pH difference", "", difference, "dp2"),
-        `Intended n(HA) = ${dp(targetAcidMass, 3)}/${dp(acid.mr, 1)} = ${scientific(intendedHA)} mol; intended n(A⁻) = ${dp(targetSaltMass, 3)}/${dp(acid.saltMr, 1)} = ${scientific(intendedA)} mol`,
+        `Intended n(HA) = ${dp(targetAcidMass, 3)}/${dp(acid.mr, 1)} = ${scientific(intendedHA)} mol`, `Intended n(A⁻) = ${dp(targetSaltMass, 3)}/${dp(acid.saltMr, 1)} = ${scientific(intendedA)} mol`,
         `pH(intended) = −log₁₀(K_a n(HA)/n(A⁻)) = ${dp(targetPH, 2)}`,
-        `Actual masses: acid = ${dp(actualAcidMass, 3)} g; salt = ${dp(actualSaltMass, 3)} g`,
-        `Actual n(HA) = ${scientific(actualHA)} mol; actual n(A⁻) = ${scientific(actualA)} mol`,
+        `Actual acid mass = ${dp(actualAcidMass, 3)} g`, `Actual salt mass = ${dp(actualSaltMass, 3)} g`,
+        `Actual n(HA) = ${scientific(actualHA)} mol`, `Actual n(A⁻) = ${scientific(actualA)} mol`,
         `pH(actual) = −log₁₀(${scientific(acid.ka * actualHA / actualA)}) = ${dp(actualPH, 2)}`,
         `Absolute difference = |${dp(actualPH, 4)} − ${dp(targetPH, 4)}| = ${difference.toFixed(4)} pH units = ${dp(difference, 2)} pH units (2 d.p.)`)], [bufferAudit(actualHA, actualA), bufferAudit(intendedHA, intendedA)]);
     }
@@ -642,7 +642,7 @@
     const referencePH = Number(dp(phOf(acid.ka * remaining / added), 2)), h = hOf(referencePH), ka = h * added / remaining;
     return question(id, level, seed, `${dp(acidV, 1)} cm³ of ${dp(acidC, 3)} mol dm⁻³ ${acid.name} is partially neutralised by ${dp(baseV, 1)} cm³ of ${dp(baseC, 3)} mol dm⁻³ sodium hydroxide. The resulting pH is ${dp(referencePH, 2)}. Calculate K_a.`, [], [part(response("ka", "Calculate K_a.", "K_a", "mol dm⁻³", ka),
       `n(HA) initially = ${dp(acidC, 3)} × ${dp(acidV / 1000, 3)} = ${scientific(initial)} mol`, `n(OH⁻) = ${dp(baseC, 3)} × ${dp(baseV / 1000, 3)} = ${scientific(added)} mol`,
-      `HA + OH⁻ → A⁻ + H₂O; n(HA) remaining = ${scientific(remaining)} mol; n(A⁻) = ${scientific(added)} mol`,
+      `HA + OH⁻ → A⁻ + H₂O`, `n(HA) remaining = ${scientific(remaining)} mol`, `n(A⁻) = ${scientific(added)} mol`,
       `[H⁺] = 10^(−${dp(referencePH, 2)}) = ${scientific(h)} mol dm⁻³`, `K_a = [H⁺]n(A⁻)/n(HA) = ${scientific(h)} × ${scientific(added)}/${scientific(remaining)} = ${scientific(ka)} mol dm⁻³`)], [bufferAudit(remaining, added)]);
   }
 

@@ -83,7 +83,8 @@
     $('circles').title=$('circles').textContent;
   }
   function setTool(next){tool=next;selected=[];hover=null;chargePreview=null;document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===tool)));document.querySelectorAll('[data-element]').forEach(b=>b.setAttribute('aria-pressed',String(tool==='atom'&&b.dataset.element===selectedElement)));document.querySelectorAll('[data-charge]').forEach(b=>b.setAttribute('aria-pressed',String(tool==='charge'&&Number(b.dataset.charge)===pendingCharge)));
-    const help={atom:`Drag ${selectedElement} here, or tap to place it. Drag diagram objects to move them.`,dot:'Tap or drop a dot on a shell or shared region. Electrons arrange automatically.',cross:'Tap or drop a cross on a shell or shared region. Electrons arrange automatically.',triangle:'Tap or drop a triangle on a shell or shared region. Use it to distinguish a third electron source.',charge:`Apply ${R.chargeText(pendingCharge)}: an ion gains brackets; a covalent atom symbol gets a local charge. Drop on the outer shell to bracket a connected ion.`,erase:'Tap an object to erase it; dragging still moves it.'};say(help[tool]);render();}
+    const symbolHelp='Dots, crosses and triangles are interchangeable; use them consistently to distinguish electron sources.';
+    const help={atom:`Drag ${selectedElement} here, or tap to place it. Drag diagram objects to move them.`,dot:`Tap or drop a dot on a shell or shared region. ${symbolHelp}`,cross:`Tap or drop a cross on a shell or shared region. ${symbolHelp}`,triangle:`Tap or drop a triangle on a shell or shared region. ${symbolHelp}`,charge:`Apply ${R.chargeText(pendingCharge)}: an ion gains brackets; a covalent atom symbol gets a local charge. Drop on the outer shell to bracket a connected ion.`,erase:'Tap an object to erase it; dragging still moves it.'};say(help[tool]);render();}
   function at(event){const p=new DOMPoint(event.clientX,event.clientY).matrixTransform(svg.getScreenCTM().inverse());return{x:p.x,y:p.y};}
   function snap(p,exclude=[],element=selectedElement){
     p=clamp(p);
@@ -92,7 +93,7 @@
     const candidates=others.flatMap(a=>{
       const group=state.groups.find(g=>g.bracket&&g.atomIds.includes(a.id));
       if(movingGroup&&group&&movingGroup.id!==group.id)return [];
-      const d=Math.hypot(p.x-a.x,p.y-a.y),bondLength=DotCrossData.bondDistance(element,a),snapRange=bondLength+60;
+      const d=Math.hypot(p.x-a.x,p.y-a.y),bondLength=R.bondDistance(element,a),snapRange=bondLength+60;
       if(d<35||d>snapRange)return [];
       const angle=Math.round(Math.atan2(p.y-a.y,p.x-a.x)/(Math.PI/6))*Math.PI/6;
       const target={x:a.x+bondLength*Math.cos(angle),y:a.y+bondLength*Math.sin(angle)};
@@ -189,7 +190,7 @@
       if(electronSymbols.includes(tool)){addElectron(region?freeIn(JSON.parse(region)):atom?freeIn({kind:'atom',atomId:aid}):R.regionAt(state,cursor),tool);return;}
       if(tool==='charge'){chargeAt(atom||cursor,pendingCharge,event.target);return;}
       if(eid){edit(()=>{const e=state.electrons.find(e=>e.id===eid);e.symbol=electronSymbols[(electronSymbols.indexOf(e.symbol)+1)%electronSymbols.length];});return;}
-      if(tool==='atom'&&!aid&&!gid){addAtom(cursor);cursor=clamp({x:cursor.x+DotCrossData.bondDistance(selectedElement,selectedElement),y:cursor.y});showCursor=true;render();}return;
+      if(tool==='atom'&&!aid&&!gid){addAtom(cursor);cursor=clamp({x:cursor.x+R.bondDistance(selectedElement,selectedElement),y:cursor.y});showCursor=true;render();}return;
     }
     const delta={ArrowLeft:[-10,0],ArrowRight:[10,0],ArrowUp:[0,-10],ArrowDown:[0,10]}[event.key];if(delta){event.preventDefault();if(aid){edit(()=>{const a=state.atoms.find(a=>a.id===aid);Object.assign(a,clamp({x:a.x+delta[0],y:a.y+delta[1]}));});}else{cursor=clamp({x:cursor.x+delta[0],y:cursor.y+delta[1]});showCursor=true;hover=electronSymbols.includes(tool)?R.regionAt(state,cursor):null;render();}}
   });
@@ -250,7 +251,7 @@
   const questionCategory=q=>q.practiceCategory||q.category;
   function pool(){if(teacher)return questions.slice();const seen=new Set();return questions.filter(q=>{const practiceCategory=questionCategory(q),key=practiceCategory==='covalent'&&!q.namedSpecies?`covalent:${q.formula}`:q.id;if((category!=='all'&&practiceCategory!==category)||!q.grades?.includes(grade)||seen.has(key))return false;seen.add(key);return true;});}
   const stateKey=`dot-and-cross-${standaloneLeaf}-${practice}-v2${category==='all'?'':`-${category}`}`;
-  function readState(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(_){return null;}}
+  function readState(key){if(globalThis.ActivityLaunch?.fresh)return null;try{return JSON.parse(localStorage.getItem(key)||'null');}catch(_){return null;}}
   function savedQuestionId(saved){const match=/^(?:all|ionic|covalent):([123]):(.+)$/.exec(saved?.questionKey||'');return match&&Number(match[1])===grade?match[2]:null;}
   function legacyState(items){
     if(test||teacher)return null;
@@ -285,9 +286,24 @@
     }
     return queue[hash%queue.length]||candidates[0];
   }
+  function reflowExpandedShells(diagram){
+    const centreElement=question.id==='phosphorus-pentachloride'?'P':question.id==='sulfur-hexafluoride'?'S':null;
+    if(!centreElement||!Array.isArray(diagram?.atoms))return;
+    const centres=diagram.atoms.filter(a=>a.element===centreElement);
+    if(centres.length!==1)return;
+    const centre=centres[0],terminalElement=centreElement==='P'?'Cl':'F';
+    // Upgrade old snapped layouts once; preserve manually chosen distances.
+    diagram.atoms.filter(a=>a.element===terminalElement).forEach(a=>{
+      const dx=a.x-centre.x,dy=a.y-centre.y,d=Math.hypot(dx,dy);
+      if(Math.abs(d-DotCrossData.bondDistance(centre,a))>1e-6)return;
+      const target=R.bondDistance(centre,a);
+      a.x=centre.x+dx*target/d;a.y=centre.y+dy*target/d;
+    });
+  }
   function load(id,restore=null,fresh=false){
     T.stop();
     save();question=questions.find(q=>q.id===id);questionKey=`${scope()}:${id}`;
+    R.setQuestion(question);
     if(test)remaining=(Array.isArray(restore?.remaining)?restore.remaining:pool().map(q=>q.id)).filter(next=>next!==id);
     else remaining=remaining.filter(next=>next!==id);
     let stored=null;if(!test&&!teacher&&!drafts.has(questionKey)&&stateKey){const candidate=readState(stateKey);if(candidate?.questionKey===questionKey)stored=candidate;if(!stored&&legacySaved?.question.id===id)stored=legacySaved.saved;}
@@ -296,6 +312,7 @@
     // safely while preserving the normal editor's ability to hold an
     // intentionally incomplete student drawing during the current attempt.
     if(C.validateState(state).length){state=empty();history=[];future=[];serial=0;assessment=null;feedbackResult=null;checked=false;}
+    [state,...history,...future].forEach(reflowExpandedShells);
     attemptId=test?.attemptId||attemptId;
     timing=prior?.timing;
     if(!teacher){

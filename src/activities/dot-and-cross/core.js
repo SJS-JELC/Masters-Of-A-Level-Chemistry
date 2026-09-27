@@ -37,9 +37,9 @@
     return true;
   }
   function invertSymbol(s) { return s === 'dot' ? 'cross' : s === 'cross' ? 'dot' : 'triangle'; }
-  function symbolCounts(electrons, invert) {
+  function symbolCounts(electrons, transform) {
     var result = { dot: 0, cross: 0, triangle: 0 };
-    electrons.forEach(function (e) { var s = invert ? invertSymbol(e.symbol) : e.symbol; result[s]++; });
+    electrons.forEach(function (e) { var s = transform && typeof transform === 'object' ? transform[e.symbol] : transform ? invertSymbol(e.symbol) : e.symbol; result[s]++; });
     return result;
   }
 
@@ -471,8 +471,8 @@
     var bondOrders=Object.fromEntries(ids.map(function(id){return [id,Object.values(g.edges[id]).reduce(function(sum,n){return sum+n;},0)];}));
     var badValence=ids.filter(function(id){var el=g.atom[id].element;return bondOrders[id]!==((el==='H'?2:8)-VALENCE[el]);});
     var badLone=ids.filter(function(id){return g.lone[id].length!==VALENCE[g.atom[id].element]-bondOrders[id];});
-    var paired=allBondSlotsPaired(g),origins=paired&&Object.keys(g.bondElectrons).every(function(k){var pair=k.split('|');return bondProfile(g,pair[0],pair[1],false).every(function(p){return p.symbols.dot===1&&p.symbols.cross===1;});})&&ids.every(function(id){return new Set(g.lone[id].map(function(e){return e.symbol;})).size<=1;});
-    // Dots/crosses distinguish the two donors within each bond. Requiring a
+    var paired=allBondSlotsPaired(g),origins=paired&&Object.keys(g.bondElectrons).every(function(k){var pair=k.split('|');return bondProfile(g,pair[0],pair[1],false).every(function(p){return SYMBOLS.filter(function(symbol){return p.symbols[symbol]===1;}).length===2;});})&&ids.every(function(id){return new Set(g.lone[id].map(function(e){return e.symbol;})).size<=1;});
+    // Any two distinct symbols distinguish the donors within each bond. Requiring a
     // global two-colouring would wrongly reject odd rings such as cyclopropane.
     var connected=ids.length>0&&seen.size===ids.length,atomsOk=countsOk&&connected&&!badValence.length;
     var octets=ids.length>0&&ids.every(function(id){return shells[id]===(g.atom[id].element==='H'?2:8);})&&state.electrons.length===expectedFormula(question.formula);
@@ -481,7 +481,7 @@
     add(atomsOk,'atoms-and-connectivity','Formula and connectivity','The formula matches one connected molecule with valid neutral valencies.','Use the given atom counts in one connected molecule; check each atom’s valency.',badValence);
     add(paired,'shared-electrons','Shared electrons','Every bond contains complete shared pairs.','Complete each shared electron pair.');
     add(!badLone.length,'lone-electrons','Lone electrons','Each atom has the correct non-bonding electron count.','Check each atom’s non-bonding electrons.',badLone);
-    add(origins,'electron-origins','Electron origins','Each shared pair contains a dot and a cross; non-bonding electrons on each atom use one symbol.','Use a dot and a cross in each shared pair, and one symbol for each atom’s non-bonding electrons.');
+    add(origins,'electron-origins','Electron origins','Each shared pair uses two distinct symbols; non-bonding electrons on each atom use one symbol.','Choose any two of dots, crosses and triangles for each shared pair, and one symbol for each atom’s non-bonding electrons.');
     add(state.groups.length===0,'groups-and-charges','Neutral molecule','The molecule has no ionic brackets or charges.','Draw a neutral molecule without ionic brackets or charges.',state.groups.map(function(g){return g.id;}));
     add(octets,'octets-and-duets','Duets and octets','Duets, octets and the total outer-electron inventory balance.','Check shell counts and the total number of outer electrons.');
     return {correct:criteria.every(function(c){return c.passed;}),criteria:criteria};
@@ -561,7 +561,18 @@
     if (question.namedSpecies) return checkNamed(state, question);
     if(question.category==='covalent')return checkCovalent(state,question);
     var exp = graph(question.reference), act = graph(state), mapping = findIsomorphism(exp, act);
-    function originsMatch(candidate) { return expectedComponentMap(exp,candidate).every(function (component) { return [false,true].some(function (invert) { return loneProfilesForComponent(exp,act,candidate,component,invert) && bondProfilesForComponent(exp,act,candidate,component,invert); }); }); }
+    var symbolMappings = permutations(SYMBOLS).map(function (symbols) {
+      var remap = Object.create(null);
+      SYMBOLS.forEach(function (symbol, i) { remap[symbol] = symbols[i]; });
+      return remap;
+    });
+    function originsMatch(candidate) {
+      return expectedComponentMap(exp,candidate).every(function (component) {
+        return symbolMappings.some(function (remap) {
+          return loneProfilesForComponent(exp,act,candidate,component,remap) && bondProfilesForComponent(exp,act,candidate,component,remap);
+        });
+      });
+    }
     if (mapping) {
       // Equivalent atoms can have different neighbourhood roles. Continue the
       // search when the first structural mapping does not match annotations.
@@ -575,16 +586,12 @@
     criteria.push(sharedOk ? pass('shared-electrons', 'Shared electrons', 'Every bond has the correct number of complete shared pairs.', []) : fail('shared-electrons', 'Shared electrons', 'One or more shared pairs are missing, extra, or incomplete.', []));
     var components = mapping ? expectedComponentMap(exp, mapping) : [], originOk = false, loneOk = false;
     if (mapping) {
-      originOk = components.every(function (component) {
-        return [false, true].some(function (invert) {
-          return loneProfilesForComponent(exp, act, mapping, component, invert) && bondProfilesForComponent(exp, act, mapping, component, invert);
-        });
-      });
+      originOk = originsMatch(mapping);
       loneOk = components.every(function (component) { return loneCountsForComponent(exp, act, mapping, component); });
     }
     var loneErrors = mapping ? Object.keys(mapping).filter(function (id) { return exp.lone[id].length !== act.lone[mapping[id]].length; }).map(function (id) { return mapping[id]; }) : [];
     criteria.push(loneOk ? pass('lone-electrons', 'Lone electrons', 'Each atom has the correct number of non-bonding electrons.', []) : fail('lone-electrons', 'Lone electrons', 'Check the number of non-bonding electrons on each atom.', loneErrors));
-    criteria.push(originOk ? pass('electron-origins', 'Electron origins', 'Dots and crosses consistently distinguish electron origins.', []) : fail('electron-origins', 'Electron origins', 'Check which atom supplied each electron: shared pairs need one of each symbol, and transferred electrons must be distinguished.', state.electrons.map(function(e){return e.id;})));
+    criteria.push(originOk ? pass('electron-origins', 'Electron origins', 'Your chosen dots, crosses or triangles consistently distinguish electron origins.', []) : fail('electron-origins', 'Electron origins', 'Use dots, crosses or triangles consistently: shared pairs need two distinct symbols, and transferred electrons must be distinguished.', state.electrons.map(function(e){return e.id;})));
     var groupsOk = !!mapping && sameGroupSets(question.reference, state, mapping);
     criteria.push(groupsOk ? pass('groups-and-charges', 'Ions and charges', question.category === 'covalent' ? 'The molecule is neutral, with no ionic brackets.' : 'Each ion is bracketed with its correct charge and ratio.', []) : fail('groups-and-charges', 'Ions and charges', 'Check each ion’s brackets and charge; bracket a whole hydroxide ion together.', state.groups.map(function(g){return g.id;})));
     var shellsExp = shellProfiles(exp), shellsAct = shellProfiles(act), shellsOk = !!mapping && Object.keys(shellsExp).every(function (eid) {

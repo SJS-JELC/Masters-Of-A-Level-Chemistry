@@ -23,7 +23,7 @@
   function drawStats(id) {
     const container = document.getElementById('detailStats');
     if (Object.hasOwn(progress.config, id)) {
-      progress.renderChoices(container, {leafId: id, href: activities[id].href});
+      progress.renderChoices(container, {leafId: id, href: activities[id].href, fresh: true});
     } else {
       container.classList.remove('practice-choices');
       container.replaceChildren(element('p', 'mastery-status', 'Not assessed'), element('p', 'mastery-note', 'No practice activity is available yet.'));
@@ -64,7 +64,7 @@
     document.getElementById('activityNote').textContent = activity ? activity.note : 'A practice activity has not yet been added for this subtopic.';
     refreshProgress();
     const link = document.getElementById('activityLink'); link.hidden = !activity || Boolean(activity.mastery);
-    if (activity) { link.href = activity.href; link.textContent = 'Open ' + activity.label; }
+    if (activity) { const url = new URL(activity.href, document.baseURI); url.searchParams.set('fresh', '1'); link.href = url.href; link.textContent = 'Open ' + activity.label; }
     else { link.removeAttribute('href'); link.textContent = ''; }
     dialog.style.setProperty('--accent', gem.colour);
     if (!dialog.open) dialog.showModal();
