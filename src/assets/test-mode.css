@@ -76,4 +76,7 @@
 
 /* Stats navigation is available outside revision selection and active questions. */
 .stats-tile{text-decoration:none}
-.test-selecting .stats-tile,.test-revising .stats-tile{display:none!important}
+.test-selecting .stats-tile,.test-revising .stats-tile,.test-selecting .olympiad-tile,.test-revising .olympiad-tile{display:none!important}
+.olympiad-tile{text-decoration:none}
+.olympiad-tile svg{width:38px;height:30px;color:#ffde59;overflow:visible}
+@media(max-width:600px){.olympiad-tile svg{width:32px;height:26px}}

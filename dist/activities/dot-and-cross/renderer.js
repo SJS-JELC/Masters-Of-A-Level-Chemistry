@@ -8,16 +8,18 @@
   const angles = [-100, -80, -10, 10, 80, 100, 170, 190];
   const EPSILON = 1e-7;
   const PAIR_HALF_ANGLE = 9 * Math.PI / 180;
+  let layoutQuestionId = null;
+  function setQuestion(question) { layoutQuestionId = question?.id || null; }
 
   function elementOf(atomOrElement) {
     return typeof atomOrElement === 'string' ? atomOrElement : atomOrElement?.element;
   }
   function shellRadius(atomOrElement) {
-    if (Data && typeof Data.shellRadius === 'function') return Data.shellRadius(atomOrElement);
+    if (Data && typeof Data.shellRadius === 'function') return Data.shellRadius(atomOrElement, layoutQuestionId);
     return elementOf(atomOrElement) === 'H' ? 40 : 64;
   }
   function bondDistance(a, b) {
-    if (Data && typeof Data.bondDistance === 'function') return Data.bondDistance(a, b);
+    if (Data && typeof Data.bondDistance === 'function') return Data.bondDistance(a, b, layoutQuestionId);
     return shellRadius(a) + shellRadius(b) - 24;
   }
 
@@ -163,6 +165,27 @@
     }).filter(candidate => candidate.space >= clearance-EPSILON);
   }
 
+  // Terminal octets use a 2D drawing convention: the bond axis occupies one
+  // direction, including when two shared pairs form a double bond.
+  function terminalPairSectors(state, atom, count) {
+    const bonds = bondPairs(state).filter(ids => ids.includes(atom.id));
+    if (bonds.length !== 1) return null;
+    const ids = bonds[0], other = atomById(state, ids.find(id => id !== atom.id));
+    if (!other || distance(atom, other) < EPSILON) return null;
+    const slots = state.electrons.filter(e => e.anchor?.kind === 'bond' &&
+      pairKey(e.anchor.a, e.anchor.b) === pairKey(...ids)).map(e => e.anchor.slot).sort((a,b) => a-b);
+    const complete = n => slots.length === n && slots.every((slot,i) => slot === i);
+    const offsets = count === 3 && complete(2) ? [90,180,270] :
+      count === 2 && complete(4) ? [120,240] : null;
+    if (!offsets) return null;
+    const radius = shellRadius(atom), neighbours = state.atoms.filter(a => a.id !== atom.id);
+    const sectors = offsets.map(degrees => ({angle:vectorAngle(atom,other)+degrees*Math.PI/180}));
+    return sectors.every(sector => [-PAIR_HALF_ANGLE,PAIR_HALF_ANGLE].every(offset => {
+      const p = {x:atom.x+radius*Math.cos(sector.angle+offset),y:atom.y+radius*Math.sin(sector.angle+offset)};
+      return neighbours.every(neighbour => distance(p,neighbour)-shellRadius(neighbour) >= 6-EPSILON);
+    })) ? sectors : null;
+  }
+
   function atomSectorForSlot(state, atom, slot) {
     const candidates = atomSectorAngles(state, atom);
     const group = Math.floor(slot / 2);
@@ -171,6 +194,8 @@
       .map(e => Math.floor(e.anchor.slot / 2)));
     occupiedGroups.add(group);
     const ordered = [...occupiedGroups].sort((a,b) => a-b);
+    const preferred = terminalPairSectors(state, atom, ordered.length);
+    if (preferred) return preferred[ordered.indexOf(group)];
     // Search combinations rather than greedily consuming a gap another pair needs.
     function fit(chosen) {
       if (chosen.length === ordered.length) return chosen;
@@ -399,5 +424,5 @@
     return title;
   }
 
-  root.DotCrossRenderer = { draw, point, targets, key, bondPairs, nearbyPairs, chargeText, angles, regionAt, freeAnchor, overlapCenter, shellRadius, bondDistance, groupBounds };
+  root.DotCrossRenderer = { draw, point, targets, key, bondPairs, nearbyPairs, chargeText, angles, regionAt, freeAnchor, overlapCenter, shellRadius, bondDistance, groupBounds, setQuestion };
 })(globalThis);

@@ -27,6 +27,7 @@
     catch (_) { el.saveStatus.textContent = "Progress could not be saved in this browser. Your current answer remains in this tab."; }
   }
   function loadSave() {
+    if (globalThis.ActivityLaunch?.fresh) return null;
     try {
       const saved = JSON.parse(localStorage.getItem(STORE));
       return S.valid(saved) ? saved : null;
@@ -127,7 +128,12 @@
       if (core) core.forEach((n, i) => { if (n) session.response.counts[i] = ""; });
       const fields = el.questionPanel.querySelector("#numericFields"); if (fields) fields.innerHTML = numericFields(); save();
     });
-    const titleNode = el.questionPanel.querySelector("#questionTitle"); titleNode?.focus({ preventScroll: true });
+    const answerField = !session.result && (
+      el.questionPanel.querySelector("#identityInput:not(:disabled)") ||
+      el.questionPanel.querySelector("#numericFields input:not(:disabled)")
+    );
+    if (answerField) answerField.focus();
+    else el.questionPanel.querySelector("#questionTitle")?.focus({ preventScroll: true });
     if (id && globalThis.QuestionReview) QuestionReview.mount(el.questionPanel, id, loadReview);
     if (!reviewing) {
       const item = session.current;

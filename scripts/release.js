@@ -68,13 +68,15 @@ function checkTree(base) {
 }
 function manifest() {
   const data=JSON.parse(fs.readFileSync(path.join(root,'release.json'),'utf8'));
-  if(!Array.isArray(data.files)||!Array.isArray(data.activities)||new Set(data.files).size!==data.files.length)throw Error('Invalid release manifest');
+  const sharedRuntime=data.sharedRuntime||[];
+  if(!Array.isArray(data.files)||!Array.isArray(data.activities)||!Array.isArray(sharedRuntime)||new Set(data.files).size!==data.files.length||new Set(sharedRuntime).size!==sharedRuntime.length)throw Error('Invalid release manifest');
+  for(const file of sharedRuntime)if(!/^activities\/[^/]+\/[^/]+\.(?:js|css)$/.test(file)||!data.files.includes(file))throw Error('Invalid shared runtime dependency: '+file);
   for(const name of ['index.html','.nojekyll'])if(!data.files.includes(name))throw Error('Missing release entry: '+name);
   for(const f of data.files){
     within(path.join(root,'src'),f);
     if(/(?:^|\/)(?:node_modules|drafts|context|scripts|mastery-src)(?:\/|$)|\.md$|(?:^|\/)questions\.json$|(?:^|\/)mastery\.html$/i.test(f))throw Error('Source-only file in release: '+f);
     const activity=f.match(/^activities\/([^/]+)\//)?.[1];
-    if(activity&&!data.activities.includes(activity))throw Error('Unapproved activity: '+activity);
+    if(activity&&!data.activities.includes(activity)&&!sharedRuntime.includes(f))throw Error('Unapproved activity: '+activity);
   }
   for(const activity of data.activities)if(!data.files.includes(`activities/${activity}/index.html`))throw Error('Activity entry missing: '+activity);
   return data;

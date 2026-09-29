@@ -105,6 +105,7 @@
   }
 
   function readPractice() {
+    if (root.ActivityLaunch?.fresh) return null;
     try {
       const value = JSON.parse(root.localStorage?.getItem(practiceStore()) || 'null');
       if (!value || value.version !== PRACTICE_VERSION || value.leafId !== LEAF ||

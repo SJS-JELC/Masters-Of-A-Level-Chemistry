@@ -50,7 +50,11 @@
     const heading=document.createElement('h3');heading.className=`feedback-title ${result.correct?'pass':'fail'}`;heading.textContent=result.correct?'Correct diagram':'Keep building';
     const list=document.createElement('ul');list.className='feedback-list';result.criteria.filter(c=>!(c.id==='state-valid'&&c.passed)).forEach(c=>{const li=document.createElement('li');li.className=c.passed?'pass':'fail';li.textContent=`${c.passed?'✓':'○'} ${c.message||c.label}`;list.appendChild(li);});$('feedback').replaceChildren(heading,list);
   }
-  function syncTestControls(){if($('next'))$('next').disabled=!teacher&&!assessment;}
+  function syncTestControls(){if($('next'))$('next').disabled=!teacher&&!assessment;
+    const correct=feedbackResult?.correct===true;
+    $('check').classList.toggle('primary',!correct);
+    $('next').classList.toggle('primary',correct);
+  }
   function snapshotForBridge(){return question?{version:2,questionId:question.id,category,grade,diagram:snapshot(),serial,history:copy(history),future:copy(future),circles,checked,assessment:copy(assessment),feedback:copy(feedbackResult),remaining:copy(remaining),timing}:null;}
   function saveTest(){if(test&&question)return B.save(snapshotForBridge());}
   function refreshMastery(){if(test||teacher||!progressModel)return;try{progressModel.refresh();}catch(_){}}
@@ -196,6 +200,17 @@
   });
   function undo(){if(!history.length)return;future.push(snapshot());state=history.pop();selected=[];clearFeedback();render();saveTest();save();say('Last edit undone.');}
   function redo(){if(!future.length)return;history.push(snapshot());state=future.pop();selected=[];clearFeedback();render();saveTest();save();say('Edit restored.');}
+  // Enter follows the highlighted action; Space still operates the diagram tools.
+  document.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey||event.isComposing)return;
+    if(document.querySelector('dialog[open]')||event.target.closest('input,textarea,select,a,summary,[contenteditable]:not([contenteditable="false"])'))return;
+    const button=event.target.closest('button');
+    if(button&&!['check','next'].includes(button.id))return;
+    event.preventDefault();event.stopPropagation();
+    if(event.repeat||drag)return;
+    const action=$(feedbackResult?.correct===true?'next':'check');
+    if(!action.disabled)action.click();
+  },true);
   document.addEventListener('keydown',event=>{if(event.key==='Escape'){cancelDrag();selected=[];render();}if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='z'&&!['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName)){event.preventDefault();event.shiftKey?redo():undo();}});
   document.querySelectorAll('[data-tool]').forEach(button=>{button.addEventListener('click',()=>{if(button.dataset.dragged==='true'){button.dataset.dragged='false';return;}setTool(button.dataset.tool);});if(electronSymbols.includes(button.dataset.tool))button.addEventListener('pointerdown',event=>{button.dataset.dragged='false';setTool(button.dataset.tool);startDrag(event,{kind:'paletteSymbol',symbol:button.dataset.tool},button);});});
   document.querySelectorAll('[data-element]').forEach(button=>{button.addEventListener('pointerdown',event=>{button.dataset.dragged='false';selectedElement=button.dataset.element;setTool('atom');startDrag(event,{kind:'palette',element:selectedElement},button);});button.addEventListener('click',()=>{if(button.dataset.dragged==='true'){button.dataset.dragged='false';return;}selectedElement=button.dataset.element;setTool('atom');});});
