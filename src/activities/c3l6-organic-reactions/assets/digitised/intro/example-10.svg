@@ -16,5 +16,5 @@
   <text x="161" y="125" text-anchor="middle" font-size="18" stroke="none">R</text>
   <text x="100" y="142" text-anchor="middle" font-size="12" stroke="none">X = F, Cl, Br, I</text>
   <circle cx="100" cy="76" r="25" fill="none" stroke-dasharray="3 2" stroke-width="1.4"/>
-  <text x="100" y="76" text-anchor="middle" font-size="20" stroke="none">C</text>
+  <text x="100" y="76" text-anchor="middle" font-size="20" stroke="none" dy="0.39em">C</text>
 </g></svg>

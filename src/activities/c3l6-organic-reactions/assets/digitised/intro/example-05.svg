@@ -19,8 +19,8 @@
   <polygon points="146,97 157.52871379227238,111.14527335528969 162.47128620772762,104.85472664471031" fill="#f1f0ff"/>
   <circle cx="65" cy="88" r="22" fill="none" stroke-dasharray="3 2" stroke-width="1.4"/>
   <circle cx="135" cy="88" r="22" fill="none" stroke-dasharray="3 2" stroke-width="1.4"/>
-  <text x="65" y="88" text-anchor="middle" font-size="18" stroke="none">C</text>
-  <text x="135" y="88" text-anchor="middle" font-size="18" stroke="none">C</text>
+  <text x="65" y="88" text-anchor="middle" font-size="18" stroke="none" dy="0.39em">C</text>
+  <text x="135" y="88" text-anchor="middle" font-size="18" stroke="none" dy="0.39em">C</text>
   <text x="100" y="31" text-anchor="middle" font-size="18" stroke="none">O</text>
   <text x="31" y="73" text-anchor="middle" font-size="15" stroke="none">R</text>
   <text x="31" y="116" text-anchor="middle" font-size="15" stroke="none">R</text>

@@ -16,14 +16,12 @@ function create(content,molecule){
  function slotCorrect(state,key,id){return key==='a'?state.responses.a[id]===answer(key,id)?.answer:matches(state.responses[key][id],answer(key,id));}
  function bUnit(unitId){return B_UNITS.find(unit=>unit.id===unitId);}
  function attemptedUnit(state,unitId){const unit=bUnit(unitId);return !!unit&&unit.slots.every(id=>attemptedSlot(state,'b',id));}
- function bUnitCount(state,unitId){const unit=bUnit(unitId);if(!unit)return 0;
-  if(unitId==='b-iii'){
-   const [d,e,f]=unit.slots.map(id=>state.responses.b[id]),answersById=Object.fromEntries(unit.slots.map(id=>[id,answer('b',id)]));
-   const direct=Number(matches(d,answersById.D))+Number(matches(e,answersById.E))+Number(matches(f,answersById.F));
-   const swapped=Number(matches(d,answersById.D))+Number(matches(e,answersById.F))+Number(matches(f,answersById.E));return Math.max(direct,swapped);
-  }
-  return unit.slots.reduce((sum,id)=>sum+Number(slotCorrect(state,'b',id)),0);
+ function bUnitResults(state,unitId){const unit=bUnit(unitId);if(!unit)return {};
+  const result=Object.fromEntries(unit.slots.map(id=>[id,slotCorrect(state,'b',id)]));
+  if(unitId==='b-iii'){const swapped={D:result.D,E:matches(state.responses.b.E,answer('b','F')),F:matches(state.responses.b.F,answer('b','E'))};if(Number(swapped.E)+Number(swapped.F)>Number(result.E)+Number(result.F))return swapped;}
+  return result;
  }
+ function bUnitCount(state,unitId){return Object.values(bUnitResults(state,unitId)).filter(Boolean).length;}
  function bUnitSnapshot(state,unitId){const unit=bUnit(unitId);return fingerprint(Object.fromEntries(unit.slots.map(id=>[id,state.responses.b[id]?.graph||null])));}
  function cSnapshot(state,id){return fingerprint(state.responses.c[id]?.graph||null);}
  function checked(state,key){return state.submitted[key]||null;}
@@ -33,7 +31,7 @@ function create(content,molecule){
  function unlocked(state,key){return key==='intro'||key==='a'||key==='b'&&state.complete.a||key==='c'&&state.complete.a&&bComplete(state);}
  function submit(state,key){if(key!=='a'||state.complete.a||!unlocked(state,key)||!attempted(state,'a'))return null;const correct=answers('a').filter(a=>slotCorrect(state,'a',a.id)).length,total=answers('a').length,snapshot=fingerprint(state.responses.a);state.submitted.a={correct,total,snapshot};state.complete.a=correct===total;return {correct,total};}
  function checkUnit(state,unitId){const unit=bUnit(unitId);if(!unit||!unlocked(state,'b')||state.unitChecks[unitId]?.passed||!attemptedUnit(state,unitId))return null;const correct=bUnitCount(state,unitId),total=unit.slots.length;state.unitChecks[unitId]={correct,total,snapshot:bUnitSnapshot(state,unitId),passed:correct===total};return {correct,total,passed:correct===total};}
- function checkCSlot(state,id){const item=answer('c',id),old=state.slotChecks[id],current=cSnapshot(state,id);if(!item||!unlocked(state,'c')||old?.correct&&old.snapshot===current&&slotCorrect(state,'c',id)||!attemptedSlot(state,'c',id))return null;const correct=matches(state.responses.c[id],item);state.slotChecks[id]={correct,snapshot:current};return {correct,id};}
+ function checkCSlot(state,id,{allowLocked=false}={}){const item=answer('c',id),old=state.slotChecks[id],current=cSnapshot(state,id);if(!item||(!allowLocked&&!unlocked(state,'c'))||old?.correct&&old.snapshot===current&&slotCorrect(state,'c',id)||!attemptedSlot(state,'c',id))return null;const correct=matches(state.responses.c[id],item);state.slotChecks[id]={correct,snapshot:current};return {correct,id};}
  function validOldCheck(old,total){return !!old&&Number.isInteger(old.correct)&&old.correct>=0&&old.correct<=total&&old.total===total&&typeof old.snapshot==='string'&&/^[0-9a-f]{1,8}$/i.test(old.snapshot);}
  function restore(raw){
   const state=blank();if(!raw)return state;
@@ -68,7 +66,7 @@ function create(content,molecule){
   return state;
  }
  function saveable(state){state.complete.b=bComplete(state);state.complete.c=state.complete.b&&cComplete(state);}
- return {blank,restore,submit,checkUnit,checkCSlot,attempted,attemptedSlot,attemptedUnit,slotCorrect,bUnitCount,bUnitSnapshot,cSnapshot,bComplete,cComplete,checked,stale,unlocked,signature,answerVersion:ANSWER_VERSION,bUnits:B_UNITS.map(unit=>({id:unit.id,slots:[...unit.slots]})),saveable};
+ return {blank,restore,submit,checkUnit,checkCSlot,attempted,attemptedSlot,attemptedUnit,slotCorrect,bUnitCount,bUnitResults,bUnitSnapshot,cSnapshot,bComplete,cComplete,checked,stale,unlocked,signature,answerVersion:ANSWER_VERSION,bUnits:B_UNITS.map(unit=>({id:unit.id,slots:[...unit.slots]})),saveable};
 }
 const api={create,fingerprint};root.C3L6Assessment=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

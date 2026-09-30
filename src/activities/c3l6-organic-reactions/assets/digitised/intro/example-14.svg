@@ -9,5 +9,5 @@
   <text x="25" y="82" text-anchor="middle" font-size="18" stroke="none">R</text>
   <text x="174" y="82" text-anchor="middle" font-size="18" stroke="none">N</text>
   <circle cx="100" cy="76" r="25" fill="none" stroke-dasharray="3 2" stroke-width="1.4"/>
-  <text x="100" y="76" text-anchor="middle" font-size="20" stroke="none">C</text>
+  <text x="100" y="76" text-anchor="middle" font-size="20" stroke="none" dy="0.39em">C</text>
 </g></svg>

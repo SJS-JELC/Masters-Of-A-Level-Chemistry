@@ -1,5 +1,5 @@
-/* Layout only: editor, colours, typography and controls come from Molecule Builder. */
-.c3l6 .page{max-width:1800px}.c3l6 .masthead{padding-top:20px;padding-bottom:20px}.c3l6 .exercise{padding-top:24px}.activity-switch .restart{margin-left:auto}.guidance,.drawing-help{font-size:12px;line-height:1.8;color:var(--muted);margin-top:18px}.guidance summary,.drawing-help summary{cursor:pointer;padding:12px 0;color:var(--cyan)}#introductionImages{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}#introductionImages img{max-width:100%;width:620px;background:white;border-radius:12px}.activity-workspace{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(480px,1.2fr);gap:28px;align-items:start}.source-panel{min-width:0;background:#0a0d26;border:1px solid var(--line);border-radius:20px;overflow:hidden}.reference-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:11px;color:var(--muted)}.source-image{display:block;width:100%;background:white}.reference-note{font-size:10px;line-height:1.7;color:var(--muted);padding:0 16px}.response-panel{min-width:0}.classification-row{border:1px solid var(--line);border-radius:14px;margin:0 0 10px;padding:10px 14px;min-width:0}.classification-row legend{font-size:12px;color:var(--cyan);padding:0 6px}.classification-options{display:flex;gap:8px;flex-wrap:wrap}.classification-options label{flex:1;display:flex;align-items:center;gap:7px;min-height:44px;border-radius:10px;border:1px solid var(--line);padding:8px;font-size:11px;cursor:pointer}.classification-options label:has(input:checked){color:var(--cyan);border-color:#55f6ff88;background:#55f6ff12}.classification-options input{accent-color:var(--cyan);margin:0}.answer-slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:20px}.answer-slot{border:1px solid var(--line);border-radius:12px;min-width:0;overflow:hidden;padding:0;text-align:left;background:#06091d66}.answer-slot[aria-pressed=true]{border-color:#55f6ff88;box-shadow:0 0 0 1px #55f6ff22}.slot-label{display:block;padding:8px 9px;font-size:12px;color:var(--cyan)}.slot-preview{height:72px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px}.slot-preview svg{width:100%;height:100%}.editor-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.editor-heading h2{font-size:17px;margin:0}.editor-heading span{font-size:10px;color:var(--muted)}.drawing-instruction{font-size:11px;color:var(--muted);line-height:1.8}.c3l6 .canvas-wrap{height:360px!important}.c3l6 .editor-bar{padding:12px;gap:8px}.c3l6 .tools{flex-wrap:wrap}.c3l6 .editor-bar .view-switch{margin-left:0}.c3l6 .response-row{align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}#result{font-size:14px;line-height:1.7;margin:0;flex:1;min-width:180px}.progress-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;line-height:1.7;color:var(--muted)}.draft-footer{padding:24px 0;color:var(--muted);font-size:10px;line-height:1.6}#saveNotice{font-size:12px;color:var(--yellow)}dialog{color:var(--ink);background:#101532;border:1px solid var(--line);border-radius:18px;padding:20px;max-width:96vw;max-height:94dvh}dialog::backdrop{background:#020512cc}.dialog-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:13px}.dialog-toolbar button{font-size:25px}.dialog-actions{display:flex;gap:16px;justify-content:flex-end;flex-wrap:wrap}#referenceDialog{width:min(940px,96vw)}#referenceDialog img{display:block;width:880px;max-width:none;height:auto;background:white}#restartDialog{width:470px;font-size:12px;line-height:1.8}#restartDialog h2{font-size:19px}
+﻿/* Layout only: editor, colours, typography and controls come from Molecule Builder. */
+.c3l6 .page{max-width:1280px}.c3l6 .masthead{padding-top:20px;padding-bottom:20px}.c3l6 .exercise{padding-top:24px}.activity-switch .restart{margin-left:auto}.guidance,.drawing-help{font-size:12px;line-height:1.8;color:var(--muted);margin-top:18px}.guidance summary,.drawing-help summary{cursor:pointer;padding:12px 0;color:var(--cyan)}#introductionImages{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}#introductionImages img{max-width:100%;width:620px;background:white;border-radius:12px}.activity-workspace{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(480px,1.2fr);gap:28px;align-items:start}.source-panel{min-width:0;background:#0a0d26;border:1px solid var(--line);border-radius:20px;overflow:hidden}.reference-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:11px;color:var(--muted)}.source-image{display:block;width:100%;background:white}.reference-note{font-size:10px;line-height:1.7;color:var(--muted);padding:0 16px}.response-panel{min-width:0}.classification-row{border:1px solid var(--line);border-radius:14px;margin:0 0 10px;padding:10px 14px;min-width:0}.classification-row legend{font-size:12px;color:var(--cyan);padding:0 6px}.classification-options{display:flex;gap:8px;flex-wrap:wrap}.classification-options label{flex:1;display:flex;align-items:center;gap:7px;min-height:44px;border-radius:10px;border:1px solid var(--line);padding:8px;font-size:11px;cursor:pointer}.classification-options label:has(input:checked){color:var(--cyan);border-color:#55f6ff88;background:#55f6ff12}.classification-options input{accent-color:var(--cyan);margin:0}.answer-slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:20px}.answer-slot{border:1px solid var(--line);border-radius:12px;min-width:0;overflow:hidden;padding:0;text-align:left;background:#06091d66}.answer-slot[aria-pressed=true]{border-color:#55f6ff88;box-shadow:0 0 0 1px #55f6ff22}.slot-label{display:block;padding:8px 9px;font-size:12px;color:var(--cyan)}.slot-preview{height:72px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px}.slot-preview svg{width:100%;height:100%}.editor-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.editor-heading h2{font-size:17px;margin:0}.editor-heading span{font-size:10px;color:var(--muted)}.drawing-instruction{font-size:11px;color:var(--muted);line-height:1.8}.c3l6 .canvas-wrap{height:360px!important}.c3l6 .editor-bar{padding:12px;gap:8px}.c3l6 .tools{flex-wrap:wrap}.c3l6 .editor-bar .view-switch{margin-left:0}.c3l6 .response-row{align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}#result{font-size:14px;line-height:1.7;margin:0;flex:1;min-width:180px}.progress-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;line-height:1.7;color:var(--muted)}.draft-footer{padding:24px 0;color:var(--muted);font-size:10px;line-height:1.6}#saveNotice{font-size:12px;color:var(--yellow)}dialog{color:var(--ink);background:#101532;border:1px solid var(--line);border-radius:18px;padding:20px;max-width:96vw;max-height:94dvh}dialog::backdrop{background:#020512cc}.dialog-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:13px}.dialog-toolbar button{font-size:25px}.dialog-actions{display:flex;gap:16px;justify-content:flex-end;flex-wrap:wrap}#referenceDialog{width:min(940px,96vw)}#referenceDialog img{display:block;width:880px;max-width:none;height:auto;background:white}#restartDialog{width:470px;font-size:12px;line-height:1.8}#restartDialog h2{font-size:19px}
 @media(min-width:1200px){.source-panel{position:sticky;top:16px}}@media(max-width:1000px){.activity-workspace{grid-template-columns:1fr}.source-panel{max-width:700px;width:100%;margin:auto}.source-image{max-height:500px;object-fit:contain}.answer-slots{grid-template-columns:repeat(6,minmax(0,1fr))}.c3l6 .canvas-wrap{height:380px!important}}@media(max-width:600px){.c3l6 .masthead{padding-top:14px}.activity-switch{gap:6px}.activity-switch button{font-size:11px;padding:8px 10px}.activity-switch .restart{margin-left:0}.answer-slots{grid-template-columns:repeat(4,minmax(0,1fr))}.slot-preview{height:60px}.classification-row{padding:8px}.classification-options{gap:5px}.classification-options label{font-size:10px;padding:6px}.c3l6 .canvas-wrap{height:320px!important}.c3l6 .response-row .primary{width:100%}.c3l6 .question-row h1{font-size:26px}.source-image{max-height:400px}}
 .intro-view{max-width:1100px;margin:28px auto}.intro-view>.digitised-panel{background:#fff;color:#111;border:1px solid var(--line);border-radius:20px;padding:clamp(18px,4vw,42px);margin-bottom:22px}.digitised-panel{min-width:0;color:var(--ink);font-size:clamp(14px,1vw,17px);line-height:1.65}.digitised-panel img{display:block;max-width:100%;height:auto;object-fit:contain;margin:14px auto}.digitised-panel table{max-width:100%;border-collapse:collapse}.digitised-panel th,.digitised-panel td{padding:8px 10px;border:1px solid var(--line);text-align:left}.digitised-panel [data-reaction]{background:#0b102c;border:1px solid var(--line);border-radius:14px;padding:clamp(14px,2vw,24px);margin:0 0 16px;min-width:0}.digitised-panel [data-reaction] img{max-height:240px}.digitised-panel .classification-row{margin:18px 0 0;padding:14px}.digitised-panel .classification-options label{font-size:13px;min-height:48px}.panel-error{margin:16px;color:#ffde59;font-size:13px;line-height:1.6}.activity-workspace[hidden],.exercise[hidden],.intro-view[hidden]{display:none!important}
 .activity-workspace:has(#questionPanel .classification-row){grid-template-columns:minmax(0,1fr)}.activity-workspace:has(#questionPanel .classification-row) .source-panel{position:static}#questionPanel [data-reaction] img{background:#fff;border-radius:8px;padding:8px;max-height:200px}#questionPanel .digitised-network-scroll{background:#fff}#questionPanel .digitised-network-scroll>svg{display:block;background:#fff}
@@ -18,11 +18,11 @@
 #questionPanel .digitised-c .digitised-network{margin:16px 0 0}
 #questionPanel .digitised-c .digitised-network-scroll{background:transparent!important;border:1px solid var(--line);border-radius:16px;padding:clamp(8px,1.5vw,18px)}
 #questionPanel .digitised-c .digitised-network-scroll>svg{background:transparent!important}
-.activity-workspace:has(#questionPanel .digitised-b){grid-template-columns:minmax(0,1.08fr) minmax(480px,.92fr);gap:24px;align-items:start}
-.activity-workspace:has(#questionPanel .digitised-b) .source-panel{position:static;width:100%;max-width:none;margin:0}
-.activity-workspace:has(#questionPanel .digitised-b) .response-panel{position:sticky;top:16px}
-.activity-workspace:has(#questionPanel .digitised-b) .reference-toolbar{color:var(--muted)}
-.activity-workspace:has(#questionPanel .digitised-b) #answerSlots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:10px;margin-bottom:18px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,1.08fr) minmax(480px,.92fr);gap:24px;align-items:start}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .source-panel{position:static;width:100%;max-width:none;margin:0}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .response-panel{position:sticky;top:16px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .reference-toolbar{color:var(--muted)}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) #answerSlots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:10px;margin-bottom:18px}
 .answer-unit{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;min-width:0;padding:9px;border:1px solid var(--line);border-radius:14px;background:#0a0d2666}
 .answer-unit-title{grid-column:1/-1;min-width:0;margin:0 0 7px;color:var(--cyan);font-size:11px;line-height:1.45;font-weight:700;overflow-wrap:anywhere}
 .answer-unit-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;min-width:0}
@@ -31,9 +31,9 @@
 .unit-check:disabled{opacity:.5}.unit-feedback{color:var(--muted);font-size:11px;line-height:1.55;margin:7px 0 0;min-height:1.5em}
 .answer-slot.is-complete{border-color:#54f5b5a8;box-shadow:0 0 0 1px #54f5b522}
 #checkSelected{margin-top:0}.selected-check-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}.selected-check-row #selectedResult{color:var(--muted);font-size:12px;line-height:1.6;margin:0;flex:1;min-width:180px}
-@media(min-width:1200px){.activity-workspace:has(#questionPanel .digitised-b){grid-template-columns:minmax(0,1.08fr) minmax(520px,.92fr)}}
-@media(max-width:1100px){.activity-workspace:has(#questionPanel .digitised-b){grid-template-columns:minmax(0,1fr)}.activity-workspace:has(#questionPanel .digitised-b) .response-panel{position:static}}
-@media(max-width:600px){.activity-workspace:has(#questionPanel .digitised-b) #answerSlots{grid-template-columns:minmax(0,1fr);gap:7px}.answer-unit{padding:6px}.answer-unit-title{font-size:10px;margin-bottom:5px}.answer-unit-slots{gap:5px}.unit-check{padding:8px 6px;font-size:10px}.selected-check-row #selectedResult{min-width:140px}#questionPanel .digitised-c .digitised-network-scroll{padding:4px}}
+@media(min-width:1200px){.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,1.08fr) minmax(520px,.92fr)}}
+@media(max-width:1100px){.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,1fr)}.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .response-panel{position:static}}
+@media(max-width:600px){.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) #answerSlots{grid-template-columns:minmax(0,1fr);gap:7px}.answer-unit{padding:6px}.answer-unit-title{font-size:10px;margin-bottom:5px}.answer-unit-slots{gap:5px}.unit-check{padding:8px 6px;font-size:10px}.selected-check-row #selectedResult{min-width:140px}#questionPanel .digitised-c .digitised-network-scroll{padding:4px}}
 @media(min-width:1200px){.activity-workspace:has(#questionPanel .digitised-network-scroll){grid-template-columns:minmax(0,1fr) minmax(420px,460px);gap:24px}.activity-workspace:has(#questionPanel .digitised-network-scroll) .response-panel{position:sticky;top:16px}.activity-workspace:has(#questionPanel .digitised-network-scroll) .source-panel{position:static}.activity-workspace:has(#questionPanel .digitised-network-scroll) .digitised-network-scroll{overflow-x:hidden!important}.activity-workspace:has(#questionPanel .digitised-network-scroll) .digitised-network-scroll>svg{width:100%;height:auto}}
 /* Part (a) reaction composition. Panel HTML is fetched as a fragment, so layout rules live here. */
 #questionPanel .digitised-a .digitised-reaction{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:12px;max-width:1120px;margin-inline:auto}
@@ -52,3 +52,128 @@
  #questionPanel .digitised-a .a-component-group:has(.a-plus) .a-molecule{height:92px;max-width:min(43%,165px)}
  #questionPanel .digitised-a .a-arrow{transform:rotate(90deg);font-size:32px;line-height:1.2}
 }
+
+/* Part (b): compact inline reactions, canvas on the right. */
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,1fr) minmax(360px,420px);gap:20px;align-items:start}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .source-panel{grid-column:1;grid-row:1;position:static}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .response-panel{grid-column:2;grid-row:1;position:sticky;top:16px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) #answerSlots,.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .drawing-help{display:none}
+#questionPanel .digitised-b{box-sizing:border-box;width:100%;padding:16px;font:14px/1.5 Comfortaa,system-ui,sans-serif;container-type:inline-size}
+.digitised-b *{box-sizing:border-box}
+.digitised-b>p{margin:0 0 18px}
+.digitised-b .digitised-reaction{display:block;margin:0;padding:12px 0;border-top:1px solid var(--line)}
+.digitised-b .digitised-reaction h3{font-size:13px;margin:0 0 4px;color:var(--cyan)}
+.digitised-b .b-scheme-scroll{max-width:100%;overflow-x:auto;padding:3px 2px 10px}
+.digitised-b .b-scheme-scroll:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.digitised-b .b-reaction-row,.digitised-b .b-connected-chain{display:flex;align-items:center;gap:8px;width:max-content;min-width:0}
+.digitised-b .digitised-start,.digitised-b .b-reagent{width:156px;flex:0 0 156px;text-align:center}
+.digitised-b .digitised-start p{font-size:11px;line-height:1.45;margin:3px 0}
+.digitised-b .digitised-start figure{margin:0}
+.digitised-b .digitised-molecule{display:flex;align-items:center;justify-content:center;height:108px}
+.digitised-b .digitised-molecule img{width:156px;height:104px;object-fit:contain;margin:0;filter:invert(1)}
+.digitised-b .digitised-equilibrium{display:flex;flex:0 0 88px;width:88px;flex-direction:column;align-items:center;gap:3px;color:var(--ink);font-size:12px;line-height:1.2;white-space:nowrap}
+.digitised-b .digitised-equilibrium svg{display:block;width:88px;height:26px}
+.digitised-b .b-answer-group{display:flex;flex-direction:column;gap:6px;flex:none;min-width:0}
+.digitised-b .digitised-products{display:flex;align-items:center;gap:7px;flex-wrap:nowrap}
+.digitised-b [data-b-slot]{display:grid;grid-template-columns:auto 88px;grid-template-rows:auto auto;align-items:center;justify-content:center;column-gap:4px;row-gap:5px;flex:none;font-size:12px}
+.digitised-b .answer-slot{grid-column:2;grid-row:1;display:block;width:88px;min-width:88px;font:inherit}
+.digitised-b .slot-label{padding:6px 8px}
+.digitised-b .slot-preview{height:70px}
+.digitised-b .digitised-mass{grid-column:2;grid-row:2;display:block;text-align:center;font-size:11px;white-space:nowrap}
+.digitised-b .b-coefficient{grid-column:1;grid-row:1;font-size:12px;white-space:nowrap}
+.digitised-b .b-plus{align-self:center;margin-bottom:21px;flex:none}
+.digitised-b .b-step-controls{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:34px;font-weight:400}
+.digitised-b .b-step-controls .unit-check{width:auto;min-width:76px;min-height:32px;margin:0;padding:5px 12px;font-size:11px}
+.digitised-b .unit-feedback{font-size:10px;line-height:1.4;margin:0;max-width:180px;min-height:0}
+.digitised-b .unit-feedback:empty{display:none}
+.digitised-b .b-followup{margin-top:2px}
+@media(max-width:1100px){.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,1fr)}.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .source-panel{grid-column:1;grid-row:1}.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .response-panel{grid-column:1;grid-row:2;position:static}}
+@media(max-width:600px){#questionPanel .digitised-b{padding:12px}.digitised-b .digitised-start,.digitised-b .b-reagent{width:136px;flex-basis:136px}.digitised-b .digitised-molecule img{width:136px}}
+
+/* Part (b) spacing and presentation refinements. */
+
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,780px) minmax(360px,1fr);gap:16px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .reference-toolbar,.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .drawing-instruction{display:none}
+.c3l6 .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%);white-space:nowrap;border:0}
+.digitised-b .digitised-start{width:190px;flex-basis:190px}
+.digitised-b .digitised-molecule{height:128px}
+.digitised-b .digitised-molecule img{width:190px;height:128px}
+.digitised-b .answer-slot{position:relative;height:100px}
+.digitised-b .answer-slot .slot-label{position:absolute;top:0;left:0;z-index:1}
+.digitised-b .answer-slot .slot-preview{height:100%;width:100%;padding:7px 3px;font-size:9px}
+.digitised-b .slot-preview svg{display:block;align-self:center;flex:none;max-height:100%;margin:0}
+.digitised-b .b-step-controls{align-items:stretch;width:100%}
+.digitised-b .b-step-controls .unit-check{width:100%}
+.digitised-b .b-followup{margin-left:298px}
+.digitised-b .b-reagent{width:88px;flex:0 0 88px;min-height:100px;height:100px;visibility:visible;position:relative;background:#06091d66;border:0;border-radius:12px}
+.digitised-b .b-reagent.is-ready{visibility:visible}
+.digitised-b .repeat-label{display:block;color:var(--cyan);font-size:12px;text-align:left;padding:0 8px}
+.digitised-b .repeat-molecule{display:flex;align-items:center;justify-content:center;width:88px;height:94px}
+.digitised-b .repeat-molecule svg{display:block;width:100%;height:100%;margin:0}
+@media(max-width:1100px){.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)){grid-template-columns:minmax(0,1fr)}}
+
+
+/* Part (b): quieter editor text and persistent reference placeholders. */
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .editor-heading h2,
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .editor-bar button{font-size:13px}
+.digitised-b .b-reagent .repeat-label{position:absolute;top:6px;left:0}
+.digitised-b .b-reagent .repeat-molecule{height:100%;padding:7px 3px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) #result:empty,
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) #progressMessage:empty{display:none}
+
+/* Compact drawing controls and labels for part (b). */
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .editor-heading h2{font-size:12px;line-height:1.5}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .editor-bar{padding:8px;gap:6px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .editor-bar button{font-size:11px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .tool{width:32px;height:32px;border-radius:7px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .tool svg{width:16px;height:16px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .tools,.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .tool-group{gap:3px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .divider{height:16px;margin:0 3px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .view-switch button{min-height:28px;padding:0 8px;font-size:10px}
+.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .clean-button,.activity-workspace:has(#questionPanel :is(.digitised-b,.digitised-c)) .clear-button{min-height:32px;padding:0 9px;font-size:10px}
+
+.digitised-b .answer-slot.is-correct{border-color:#54f5b5;box-shadow:0 0 0 1px #54f5b533}
+.digitised-b .answer-slot.is-incorrect{border-color:#ffde59;box-shadow:0 0 0 1px #ffde5933}
+.digitised-b .answer-status{position:absolute;top:5px;right:6px;font:700 13px/1 Comfortaa,sans-serif;pointer-events:none}
+.digitised-b .is-correct .answer-status{color:#54f5b5}
+.digitised-b .is-incorrect .answer-status{color:#ffde59}
+.digitised-b .b-step-controls{position:relative}.digitised-b .unit-feedback.visually-hidden{left:0;top:0}
+
+/* Compact activity header. */
+.c3l6 .masthead .ocr-home-link{margin:0 0 0 auto;flex:0 0 40px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;padding:0;font-size:23px;line-height:1;text-decoration:none}
+.c3l6 #stageEyebrow,.c3l6 #partNumber{display:none}
+.c3l6 .exercise:has(.digitised-b) .question-row{margin:0;padding:0;min-height:0}
+
+/* Keep the shell and question scale steady when switching parts. */
+.c3l6 .digitised-panel{font-size:14px}
+.activity-workspace:has(#questionPanel .digitised-a) .source-panel{width:100%;max-width:1168px;margin-inline:auto;box-sizing:border-box}
+.activity-workspace:has(#questionPanel .digitised-a) .reference-toolbar{display:none}
+#questionPanel .digitised-a{padding:16px;box-sizing:border-box}
+#questionPanel .digitised-a .digitised-reaction{max-width:none;box-sizing:border-box}
+.c3l6 .exercise:has(.digitised-a) .question-row{margin:0;padding:0;min-height:0}
+@media(max-width:600px){#questionPanel .digitised-a{padding:12px}}
+
+/* Part (c): real answer controls share coordinates with SVG reaction paths. */
+#questionPanel .digitised-c{padding:16px;box-sizing:border-box;font:14px/1.5 Comfortaa,system-ui,sans-serif}
+.c3l6 .exercise:has(.digitised-c) .question-row{margin:0;padding:0;min-height:0}
+.digitised-c .digitised-network{margin:12px 0 0}
+.digitised-c .c-network-scroll{width:100%;max-width:100%;overflow-x:auto;position:relative;padding:0}
+.digitised-c .c-network-scroll:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.digitised-c .c-network{width:720px;height:1030px;position:relative}
+.digitised-c .c-connectors{position:absolute;inset:0;width:720px;height:1030px;pointer-events:none}
+.digitised-c .c-answer-node{position:absolute;width:88px;display:flex;flex-direction:column;gap:6px}
+.digitised-c .c-check{width:88px;height:32px;min-height:32px;padding:0;flex:none;margin:0;border:1px solid var(--line);border-radius:10px;background:#0c1029;color:var(--ink);font:700 11px Comfortaa,system-ui,sans-serif}
+.digitised-c .c-check:disabled{opacity:.5}
+.digitised-c .c-check[hidden]{display:block!important;visibility:hidden}
+.digitised-c .answer-slot{position:relative;display:block;flex:none;width:88px;height:100px;min-width:88px;font:inherit}
+.digitised-c .slot-label{position:absolute;top:0;left:0;z-index:1;padding:6px 8px}
+.digitised-c .slot-preview{display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:7px 3px;font-size:9px;box-sizing:border-box}
+.digitised-c .slot-preview svg{display:block;width:100%;height:100%;margin:0;flex:none}
+.digitised-c .answer-slot.is-correct{border-color:#54f5b5;box-shadow:0 0 0 1px #54f5b533}
+.digitised-c .answer-slot.is-incorrect{border-color:#ffde59;box-shadow:0 0 0 1px #ffde5933}
+.digitised-c .answer-status{position:absolute;top:5px;right:6px;font:700 13px/1 Comfortaa,sans-serif;pointer-events:none}
+.digitised-c .is-correct .answer-status{color:#54f5b5}
+.digitised-c .is-incorrect .answer-status{color:#ffde59}
+@media(max-width:600px){#questionPanel .digitised-c{padding:12px}}
+
+@media(max-width:1200px){.activity-workspace:has(#questionPanel .digitised-c){grid-template-columns:minmax(0,1fr)}.activity-workspace:has(#questionPanel .digitised-c) .source-panel{grid-column:1;grid-row:1}.activity-workspace:has(#questionPanel .digitised-c) .response-panel{grid-column:1;grid-row:2;position:static}}

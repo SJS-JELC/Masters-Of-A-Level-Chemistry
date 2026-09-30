@@ -93,7 +93,9 @@
     if (!w || !h) return canvas.getAttribute('viewBox');
     const extentX = Math.max(w / 2, ...graph.atoms.map(a => Math.abs(a.x) + 85));
     const extentY = Math.max(h / 2, ...graph.atoms.map(a => Math.abs(a.y) + 65));
-    const scale = Math.max(extentX * 2 / w, extentY * 2 / h);
+    const requestedScale = typeof options.drawingScale === 'function' ? options.drawingScale() : options.drawingScale;
+    const drawingScale = Number.isFinite(requestedScale) && requestedScale > 0 ? requestedScale : 1;
+    const scale = Math.max(1 / drawingScale, extentX * 2 / w, extentY * 2 / h);
     return `${-w * scale / 2} ${-h * scale / 2} ${w * scale} ${h * scale}`;
   }
   function fit() {

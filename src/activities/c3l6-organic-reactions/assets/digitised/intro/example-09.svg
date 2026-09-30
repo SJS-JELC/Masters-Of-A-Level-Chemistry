@@ -19,5 +19,5 @@
   <text x="39" y="123" text-anchor="middle" font-size="16" stroke="none">R₃C</text>
   <text x="161" y="123" text-anchor="middle" font-size="16" stroke="none">CR₃</text>
   <circle cx="100" cy="76" r="25" fill="none" stroke-dasharray="3 2" stroke-width="1.4"/>
-  <text x="100" y="76" text-anchor="middle" font-size="20" stroke="none">C</text>
+  <text x="100" y="76" text-anchor="middle" font-size="20" stroke="none" dy="0.39em">C</text>
 </g></svg>
