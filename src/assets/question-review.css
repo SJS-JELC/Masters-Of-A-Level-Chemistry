@@ -19,8 +19,18 @@
 .question-review-loader input { width:100%; box-sizing:border-box; }
 @media(max-width:700px) { .review-side-layout,.review-teacher-layout { display:block; } }
 .printed-review-id { display:none; }
+.header-question-code-badge { display:inline-flex; align-items:center; flex-wrap:wrap; gap:6px; width:max-content; max-width:100%; margin-top:7px; padding:3px 8px; border:1px solid var(--line,#657391); border-radius:999px; background:rgba(7,12,25,.55); color:var(--muted,#c7d2e8); font-size:.65rem; line-height:1.4; vertical-align:middle; }
+.header-question-code-badge[hidden] { display:none!important; }
+.header-question-code-label { color:var(--muted,#8f9cb4); font-size:.6rem; letter-spacing:.06em; text-transform:uppercase; }
+.header-question-code-value { font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+.question-code-transferred .question-code-source,.question-code-transferred .question-review { display:none!important; }
+.alevel-header-mastery { display:flex; flex-wrap:wrap; align-items:end; gap:8px; margin-top:8px; }
+.alevel-header-meter { display:grid; grid-template-columns:minmax(0,1fr); gap:4px; flex:1 1 92px; min-width:76px; max-width:145px; }
+.alevel-header-mastery-label { min-height:2.5em; color:var(--muted,#a9b3ca); font-size:.57rem; line-height:1.25; overflow-wrap:anywhere; }
+.alevel-header-meter .mastery-bar { margin:0; height:9px; min-height:9px; }
+@media(max-width:700px) { .alevel-header-mastery { gap:6px; } .alevel-header-meter { flex-basis:78px; min-width:65px; } .alevel-header-mastery-label { font-size:.53rem; } }
 @media print {
-  .question-review, .print-question-id { display:none!important; }
+  .question-review, .print-question-id, .header-question-code-badge, .alevel-header-mastery { display:none!important; }
   .printed-review-id {
     display:block!important;
     position:fixed;

@@ -20,7 +20,7 @@
   if (enabled) {
     document.documentElement.classList.add('test-mode-embedded');
     const style = document.createElement('style');
-    style.textContent = '.test-mode-embedded body,.test-mode-embedded .workspace-panel{min-height:0!important}.test-mode-embedded .site-back-link,.test-mode-embedded [data-mode-toggle],.test-mode-embedded .review-id,.test-mode-embedded .review-tools,.test-mode-embedded .print-button,.test-mode-embedded footer{display:none!important}';
+    style.textContent = '.test-mode-embedded body,.test-mode-embedded .workspace-panel{min-height:0!important}.test-mode-embedded .site-back-link,.test-mode-embedded [data-mode-toggle],.test-mode-embedded .review-id,.test-mode-embedded .question-review,.test-mode-embedded #printedReviewId,.test-mode-embedded .review-tools,.test-mode-embedded .print-button,.test-mode-embedded footer{display:none!important}';
     style.textContent += '.test-mode-embedded .test-transferred-title,.test-mode-embedded .question-top,.test-mode-embedded .question-topline,.test-mode-embedded .practice-heading,.test-mode-embedded .question-meta{display:none!important}.test-mode-embedded .page{padding-top:0!important}.test-mode-embedded .question-panel{margin-top:0!important}.test-mode-embedded .question-header{margin:0!important;padding:0!important}';
     document.head.append(style);
     root.addEventListener('error', () => send('error', {message:'This question could not be loaded. Retry or return to your gem selection.'}));
@@ -44,10 +44,11 @@
         }
         const reportTitle = () => {
           const title = document.querySelector('#questionTitle, [data-question-title], #questionPanel .question-header h3');
-          const text = title?.textContent?.trim() || 'Question';
-          const questionId = document.querySelector('.review-id, .question-review-id, #printedReviewId')?.textContent?.trim() || '';
+          const text = document.documentElement.dataset?.revisionTitle === 'none' ? '' : title?.textContent?.trim() || 'Question';
+          const rawQuestionId = document.querySelector('.review-id, .question-review-id, #printedReviewId')?.textContent?.trim() || '';
+          const questionId = rawQuestionId.match(/\b(?:AB2-[0-9A-Z]{1,2}-[123]-[0-9A-Z]{1,7}|EB[0-9]{2}|[A-Z][A-Z0-9]{1,9}(?:-[A-Z0-9]{1,3})*-[0-9A-Z]{6})\b/)?.[0] || '';
           const signature = text + '\\n' + questionId;
-          if (signature !== reportTitle.previous) { reportTitle.previous = signature; send('title',{title:text,questionId}); }
+          if (signature !== reportTitle.previous) { reportTitle.previous = signature; send('title',{title:text,questionId,inlineQuestionId:document.documentElement.dataset?.revisionCode === 'inline'}); }
           if (title) title.classList.add('test-transferred-title');
         };
         if (root.MutationObserver) new MutationObserver(reportTitle).observe(document.body,{childList:true,subtree:true,characterData:true});

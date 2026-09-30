@@ -77,6 +77,48 @@
     if(anchor.parentElement.classList.contains('review-side-layout'))return anchor.parentElement.querySelector('.review-sidebar');
     const layout=document.createElement('div'),side=document.createElement('aside');layout.className='review-side-layout';side.className='review-sidebar';anchor.before(layout);layout.append(side,anchor);return side;
   }
+  // Acid-base IDs encode a variable-width base-36 seed (up to seven digits),
+  // unlike the fixed six-character IDs used by the other banks.
+  const printedPattern = /\b(?:AB2-[0-9A-Z]{1,2}-[123]-[0-9A-Z]{1,7}|EB[0-9]{2}|[A-Z][A-Z0-9]{1,9}(?:-[A-Z0-9]{1,3})*-[0-9A-Z]{6})\b/;
+  function headerForCode() {
+    const heading = root.document.querySelector('main header h1, .brand h1, #activity-title, main h1');
+    return heading?.parentElement || null;
+  }
+  function syncHeaderCode() {
+    if (!root.document || root.parent !== root || new URLSearchParams(location.search).has('testSession') ||
+        (root.ChemistryMode?.get?.() === 'teacher') || new URLSearchParams(location.search).get('mode') === 'teacher') return;
+    const source = [...root.document.querySelectorAll('.review-id, .question-review-id, #printedReviewId')]
+      .find(node => !node.closest('.header-question-code-badge'));
+    const id = source?.textContent?.match(printedPattern)?.[0] || '';
+    const host = headerForCode();
+    if (!host) return;
+    let badge = host.querySelector(':scope > .header-question-code-badge');
+    if (!id) { if (badge) badge.hidden = true; return; }
+    if (!badge) {
+      badge = root.document.createElement('span'); badge.className = 'header-question-code-badge';
+      const label = root.document.createElement('span'); label.className = 'header-question-code-label'; label.textContent = 'Question code';
+      const value = root.document.createElement('span'); value.className = 'header-question-code-value';
+      badge.append(label, value); host.append(badge);
+    }
+    const value = badge.querySelector('.header-question-code-value');
+    if (value.textContent !== id) value.textContent = id;
+    badge.hidden = false;
+    root.document.body.classList.add('question-code-transferred');
+    if (source && source.id !== 'printedReviewId') source.classList.add('question-code-source');
+    let printId = root.document.getElementById('printedReviewId');
+    if (!printId) { printId = root.document.createElement('div'); printId.id = 'printedReviewId'; printId.className = 'printed-review-id'; root.document.body.append(printId); }
+    const printText = `Review ID // ${id}`;
+    if (printId.textContent !== printText) printId.textContent = printText;
+  }
+  function watchHeaderCode() {
+    if (!root.document?.documentElement || !root.MutationObserver) return;
+    new root.MutationObserver(syncHeaderCode).observe(root.document.documentElement,{childList:true,subtree:true,characterData:true});
+    syncHeaderCode();
+  }
+  if (root.document) {
+    if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded',watchHeaderCode,{once:true});
+    else watchHeaderCode();
+  }
   function mount(target, id, load) {
     if (!target || !id) return;
     if (/^[A-Z]+-[0-9A-Z]{6}$/.test(id)) {
@@ -109,6 +151,7 @@
     bar.dataset.reviewId = id;
     // Keep mode switches and copied page links on the same question.
     if (load && /^[A-Z]+-[0-9A-Z]{6}$/.test(id)) { const url = new URL(location.href); url.searchParams.set('review', id); try { history.replaceState(null, '', url); } catch (_) {} }
+    syncHeaderCode();
   }
   function requested(load) {
     if(!isTeacher())return;
@@ -126,6 +169,6 @@
     side.querySelector('strong').textContent = 'Load a question by review ID';
     side.querySelector('input').value = '';
   }
-  root.QuestionReview = { capacity, format, parse, bank, codec, mount, requested, launcher, isTeacher };
+  root.QuestionReview = { capacity, format, parse, bank, codec, mount, requested, launcher, isTeacher, syncHeaderCode };
   if (typeof module !== 'undefined') module.exports = root.QuestionReview;
 })(globalThis);

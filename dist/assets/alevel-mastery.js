@@ -168,6 +168,7 @@
     const savedItem = {...item};
     if (activeVersion(item.leafId) === 2) savedItem.progressionVersion = 2;
     records = clean([...read(), ...records, savedItem], now);
+    renderHeaderMeters();
     const targetKey = activeVersion(item.leafId) === 2 ? acidKey : key;
     try {
       const source = storage();
@@ -198,6 +199,34 @@
     node.innerHTML = '<span class="mastery-bar-fill" aria-hidden="true"></span><span class="mastery-bar-threshold" aria-hidden="true"></span>';
     return node;
   }
+  function headerLeaf() {
+    const params = new URLSearchParams(root.location?.search || ''), requested = params.get('leaf');
+    if (requested && Object.hasOwn(config, requested)) return requested;
+    const path = root.location?.pathname || '';
+    if (path.includes('/electrons-bonding/')) return 'l6-t2-1-1';
+    if (path.includes('/electron-configurations/')) return 'l6-t2-1-2';
+    if (path.includes('/dot-and-cross/')) return 'l6-t2-1-3';
+    if (path.includes('/ph-titration-curves/')) return 'u6-t1-1-9';
+    return null;
+  }
+  function renderHeaderMeters() {
+    if (!root.document || root.parent !== root || root.ChemistryMode?.get?.() === 'teacher' ||
+        new URLSearchParams(root.location?.search || '').get('mode') === 'teacher') return;
+    const leafId = headerLeaf(), activity = config[leafId];
+    const heading = root.document.querySelector('main header h1, .brand h1, #activity-title, main h1');
+    if (!heading?.parentElement) return;
+    let host = heading.parentElement.querySelector(':scope > .alevel-header-mastery');
+    if (!host) { host = root.document.createElement('div'); host.className = 'alevel-header-mastery'; host.setAttribute('aria-label','A-level mastery by available level'); heading.parentElement.append(host); }
+    if (!activity) { host.hidden = true; return; }
+    host.hidden = false;
+    host.replaceChildren(...activity.availableGrades.map(level => {
+      const item = root.document.createElement('div'), label = root.document.createElement('span');
+      label.className = 'alevel-header-mastery-label'; label.textContent = activity.levelLabels[level];
+      item.className = 'alevel-header-meter'; item.dataset.level = level;
+      item.append(label,bar(summary(leafId,level).score,activity.levelLabels[level] + ' mastery',level));
+      return item;
+    }));
+  }
   function renderChoices(container, {leafId, href, fresh = Boolean(root.ActivityLaunch?.fresh)}) {
     if (!Object.hasOwn(config, leafId)) throw Error('Unknown mastery activity.');
     container.replaceChildren(); container.classList.add('practice-choices');
@@ -221,5 +250,10 @@
     }
   }
   refresh();
-  root.ALevelMastery = Object.freeze({key, acidKey, config, threshold, read, history, readHistory: history, clean, migrateRevisionSession, refresh, weightedScore, summary, achievement, nextLevel, record, attemptId, bar, renderChoices});
+  root.ALevelMastery = Object.freeze({key, acidKey, config, threshold, read, history, readHistory: history, clean, migrateRevisionSession, refresh, weightedScore, summary, achievement, nextLevel, record, attemptId, bar, renderChoices, renderHeaderMeters});
+  if (root.document) {
+    const mount = () => renderHeaderMeters();
+    if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded',mount,{once:true}); else mount();
+    root.addEventListener('storage',() => { refresh(); renderHeaderMeters(); });
+  }
 })(globalThis);

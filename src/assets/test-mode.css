@@ -34,6 +34,10 @@
 .test-selection-tools{display:flex;align-items:center;flex-wrap:wrap;gap:12px;font-size:.7rem;color:#aebbd1}
 .test-selection-tools button{border:0;border-radius:999px;padding:6px 10px;font-size:.7rem;background:#44381d;color:#ffe096}
 .test-selection-tools #testCancel{background:#462b3b;color:#ffafca}
+.test-year-bulk{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.test-year-bulk button{border:1px solid #62e3c066;border-radius:999px;padding:7px 11px;background:#142637;color:#62e3c0;font:700 .65rem Comfortaa,system-ui,sans-serif}
+.test-year-bulk button[aria-pressed="true"]{background:#21483f}
+.test-year-bulk button:disabled{opacity:.45}
 .test-selection #testStart{display:flex;align-items:center;justify-content:center;gap:10px;flex:0 0 108px;min-height:82px;border:1px solid #83ffba;border-radius:18px;background:#54f5a3;color:#08291d;font-size:1.65rem;font-weight:700;box-shadow:0 0 24px #54f5a32a}
 .test-selection button:disabled{opacity:.4;cursor:default}.test-selection button:hover:not(:disabled){filter:brightness(1.15)}
 .test-selection button:focus-visible{outline:3px solid #ffee8a;outline-offset:3px}
@@ -57,9 +61,13 @@
 #testRevision #testHeading{font-size:1rem;margin:0;color:#62e3c0}
 #testQuestionTitle{font-size:1rem;color:#edf3ff}
 #testRevision .test-session-heading>.test-actions{display:none}
-#testCurrentBars{flex:0 0 270px;margin:0 0 0 auto;gap:12px}#testCurrentBars>div{font-size:.7rem;gap:6px}#testCurrentBars>div:nth-child(1)>span{color:#ffde59}#testCurrentBars>div:nth-child(2)>span{color:#54f5b5}#testCurrentBars>div:nth-child(3)>span{color:#a884ff}
+#testCurrentBars{flex:0 1 360px;margin:0 0 0 auto;gap:10px;grid-template-columns:repeat(auto-fit,minmax(92px,1fr))}#testCurrentBars>div{min-width:0;font-size:.62rem;line-height:1.3;gap:5px}#testCurrentBars>div>span:first-child{display:block;min-height:2.6em;color:#dbe6ff;overflow-wrap:anywhere}#testCurrentBars .mastery-bar{width:100%}
+#testQuestionTitle{display:inline-block}
+.header-question-code-badge{display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:3px 8px;border:1px solid #657391;border-radius:999px;background:#11172b;color:#c7d2e8;font-size:.65rem;line-height:1.4;vertical-align:middle}
+.header-question-code-label{color:#8f9cb4;text-transform:uppercase;letter-spacing:.06em}
+#testQuestionId{font-variant-numeric:tabular-nums;white-space:nowrap}
 .test-revising .brand,.test-revising .ocr-brand{align-items:center;flex-wrap:nowrap;margin-bottom:16px}
-@media(max-width:600px){.test-navigation{gap:5px}.test-navigation button{width:34px;height:34px}.test-revising header h1{font-size:1rem}.test-revising .brand,.test-revising .ocr-brand{gap:8px}#testRevision .test-session-heading{flex-wrap:wrap;gap:12px}#testCurrentBars{flex:1 1 100%;margin:0}#testRevision #testHeading,#testQuestionTitle{font-size:.85rem}}
+@media(max-width:600px){.test-navigation{gap:5px}.test-navigation button{width:34px;height:34px}.test-revising header h1{font-size:1rem}.test-revising .brand,.test-revising .ocr-brand{gap:8px}#testRevision .test-session-heading{flex-wrap:wrap;gap:12px}#testCurrentBars{flex:1 1 100%;margin:0;grid-template-columns:repeat(3,minmax(0,1fr))}#testRevision #testHeading,#testQuestionTitle{font-size:.85rem}.header-question-code-badge{margin-left:0;margin-top:5px}}
 
 .test-revising .brand,.test-revising .ocr-brand{display:flex}
 
@@ -72,7 +80,6 @@
 .test-topic-all:focus-visible{outline:2px solid #ffee8a;outline-offset:3px}
 .test-topic-all[aria-pressed="true"]{background:#21483f}
 #testQuestionId{font-size:.7rem;color:#c7d2e8;overflow-wrap:anywhere}
-#testCurrentBars>div>span:first-child{display:none}
 
 /* Stats navigation is available outside revision selection and active questions. */
 .stats-tile{text-decoration:none}

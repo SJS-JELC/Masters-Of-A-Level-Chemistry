@@ -20,7 +20,7 @@
   tile.setAttribute('aria-controls','testSelection');
   const host = document.createElement('section'); host.id = 'testMode'; host.className = 'test-mode';
   host.innerHTML = `<section id="testSelection" class="test-selection" hidden aria-label="Choose gems for revision">
-    <div class="test-selection-content"><p id="testSelectionTitle" tabindex="-1">Select gems below</p><ul id="testChosen" class="test-chosen" aria-label="Selected gems"></ul>
+    <div class="test-selection-content"><p id="testSelectionTitle" tabindex="-1">Select gems below</p><div id="testYearBulk" class="test-year-bulk" aria-label="Select a whole year"><button type="button" data-year="l6">ADD ALL LOWER SIXTH</button><button type="button" data-year="u6">ADD ALL UPPER SIXTH</button></div><ul id="testChosen" class="test-chosen" aria-label="Selected gems"></ul>
     <div class="test-selection-tools"><span id="testSelectionCount" role="status"></span><button id="testClear" type="button">Clear selection</button><button id="testCancel" type="button">Cancel</button></div></div>
     <button id="testStart" type="button" aria-label="Go: start revision">GO<span aria-hidden="true">&gt;</span></button></section>
     <section id="testRevision" class="test-card" hidden aria-labelledby="testHeading"><div class="test-session-heading"><div><p class="test-eyebrow">TEST REVISION</p><h2 id="testHeading" tabindex="-1"></h2><span id="testQuestionTitle"></span><p id="testLevel"></p></div><div class="test-actions"><button id="testPause" type="button">Pause and return</button><button id="testChange" type="button">Change gems</button></div></div>
@@ -31,8 +31,16 @@
     <div id="testFinish" hidden><h3>Available practice mastered</h3><p>You have confirmed every available level for your selected gems.</p><p id="testGained"></p><button id="testAgain" type="button">Revise again</button></div></section>
     <p id="testSaveStatus" role="status" hidden></p>`;
   tile.parentElement.after(host);
-  const questionId = document.createElement('span'); questionId.id = 'testQuestionId';
-  $('testQuestionTitle').after(questionId);
+  const questionId = document.createElement('span'); questionId.id = 'testQuestionId'; questionId.className = 'header-question-code';
+  const codeLabel = document.createElement('span'); codeLabel.className = 'header-question-code-label'; codeLabel.textContent = 'Question code';
+  const codeBadge = document.createElement('span'); codeBadge.className = 'header-question-code-badge';
+  codeBadge.append(codeLabel,questionId);
+  document.querySelector('main > header h1').after(codeBadge);
+  codeBadge.hidden = true;
+  const yearButtons = [...document.querySelectorAll('#testYearBulk [data-year]')].map(button => ({
+    button, year: button.dataset.year,
+    ids: Object.keys(catalog).filter(id => id.startsWith(button.dataset.year + '-'))
+  }));
   const topicButtons = [];
   for (const topic of document.querySelectorAll('#yearGrid .topic-section')) {
     const ids = [...topic.querySelectorAll('[data-leaf]')].map(node => node.dataset.leaf).filter(id => catalog[id]);
@@ -101,6 +109,13 @@
       button.textContent = all ? 'REMOVE ALL' : 'ADD ALL';
       button.setAttribute('aria-pressed', String(all));
       button.setAttribute('aria-label', (all ? 'Remove all available gems in ' : 'Add all available gems in ') + name);
+    }
+    for (const {button,ids,year} of yearButtons) {
+      const all = ids.length > 0 && ids.every(id => selection.has(id));
+      button.textContent = (all ? 'REMOVE ALL ' : 'ADD ALL ') + (year === 'l6' ? 'LOWER SIXTH' : 'UPPER SIXTH');
+      button.setAttribute('aria-pressed',String(all));
+      button.disabled = ids.length === 0;
+      button.setAttribute('aria-label',(all ? 'Remove all available gems from ' : 'Add all available gems from ') + (year === 'l6' ? 'Lower Sixth' : 'Upper Sixth'));
     }
     $('testChosen').replaceChildren(...[...selection].map(id => {
       const li = document.createElement('li'), button = document.createElement('button');
@@ -191,14 +206,19 @@
     const setting = session.gems[c.leafId][c.level];
     $('testHeading').textContent = catalog[c.leafId].name;
     $('testLevel').textContent = catalog[c.leafId].labels[c.level];
-    $('testCurrentBars').replaceChildren(...catalog[c.leafId].levels.map(level => {
+    const levels = alevel
+      ? [...new Set(session.selected.flatMap(id => catalog[id].levels))].sort((a,b) => a-b)
+      : catalog[c.leafId].levels;
+    $('testCurrentBars').replaceChildren(...levels.map(level => {
       const states = session.selected.filter(id => catalog[id].levels.includes(level)).map(id => summary(id,level));
       const score = states.length ? states.reduce((sum,state) => sum + (state.score || 0),0)/states.length : null;
-      const colour = ['Gold','Green','Purple'][level-1], mastered = states.length && states.every(state => state.score > .8);
-      const judgement = !states.length ? 'No available questions' : states.every(state => state.score === null) ? 'Not assessed' : mastered ? 'Mastered across selected gems' : 'Developing mastery';
-      const box = document.createElement('div'), label = document.createElement('span'); label.textContent = colour;
-      box.dataset.level = level; box.title = colour + ': ' + judgement + (score === null ? '' : ' (' + Math.round(score*100) + '% overall)');
-      const bar = alevel ? M.bar(score,box.title,level) : M.masteryBar(score,box.title,level);
+      const representative = session.selected.find(id => catalog[id].levels.includes(level));
+      const labelText = alevel ? catalog[representative].labels[level] : ['Gold','Green','Purple'][level-1];
+      const mastered = states.length > 0 && states.every(state => state.mastered === true);
+      const judgement = states.every(state => state.score === null) ? 'Not assessed' : mastered ? 'Mastered across selected gems' : 'Developing mastery';
+      const box = document.createElement('div'), label = document.createElement('span'); label.textContent = labelText;
+      box.dataset.level = level; box.title = labelText + ': ' + judgement + (score === null ? '' : ' (' + Math.round(score*100) + '% overall)');
+      const bar = alevel ? M.bar(score,labelText + ' mastery across selected gems',level) : M.masteryBar(score,box.title,level);
       box.append(label,bar); return box;
     }));
     $('testReason').textContent = c.result ? 'Review your feedback, then choose Next question.' : setting.mode === 'check'
@@ -215,7 +235,7 @@
     overview(); save(); $('testHeading').focus();
   }
   function loadQuestion() {
-    questionId.textContent = '';
+    questionId.textContent = ''; codeBadge.hidden = true;
     stopFrame(); $('testError').hidden = true; $('testFinish').hidden = true;
     if (!session.current) { finish(); return; }
     renderProgress(); $('testQuestionTitle').textContent = ''; const c = session.current;
@@ -252,6 +272,7 @@
         payload:{leafId:c.leafId,level:c.level,state:c.state,previous:session.previous[c.leafId+':'+c.level] || null}},location.origin === 'null' ? '*' : location.origin);
     } else if (d.type === 'title') {
       questionId.textContent = typeof d.payload?.questionId === 'string' ? d.payload.questionId.slice(0,100) : '';
+      codeBadge.hidden = !questionId.textContent || d.payload?.inlineQuestionId === true;
       if (typeof d.payload?.title === 'string') $('testQuestionTitle').textContent = d.payload.title.slice(0,250);
     } else if (d.type === 'resize') {
       if (Number.isFinite(d.payload?.height)) frame.style.height = Math.max(420,Math.min(12000,d.payload.height)) + 'px';
@@ -275,6 +296,11 @@
     start(resume);
   };
   $('testClear').onclick = () => { selection.clear(); drawSelection(); };
+  for (const {button,ids} of yearButtons) button.onclick = () => {
+    const remove = ids.length > 0 && ids.every(id => selection.has(id));
+    ids.forEach(id => remove ? selection.delete(id) : selection.add(id));
+    drawSelection();
+  };
   $('testCancel').onclick = () => { leaveSelection(); tile.focus(); };
   $('testChange').onclick = selectGems; $('testReturnSelection').onclick = selectGems;
   $('testPause').onclick = () => { session.active = false; save(); stopFrame(); document.body.classList.remove('test-revising'); $('testRevision').hidden = true; map.hidden = false; tile.setAttribute('aria-label','Revision: choose gems'); tile.focus(); window.dispatchEvent(new Event('storage')); };
